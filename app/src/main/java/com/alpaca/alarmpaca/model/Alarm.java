@@ -1,17 +1,8 @@
 package com.alpaca.alarmpaca.model;
 
-import android.util.Log;
-
-import java.util.List;
-
-import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
-
-/**
- * Created by Far on 11/26/2017 AD.
- */
 
 public class Alarm extends RealmObject {
 
@@ -29,7 +20,7 @@ public class Alarm extends RealmObject {
     }
 
     public Alarm(int hour, int minute, RealmList<Integer> repeat) {
-        String id = "";
+        String id;
         id = hour <= 9 ? "0" : "";
         id = id.concat(Integer.toString(hour))
                 .concat(minute <= 9 ? "0" : "")

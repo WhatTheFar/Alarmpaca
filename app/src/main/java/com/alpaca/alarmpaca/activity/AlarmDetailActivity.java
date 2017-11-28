@@ -4,10 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,17 +22,12 @@ import java.util.Calendar;
 
 import io.realm.Realm;
 import io.realm.RealmList;
-import safety.com.br.android_shake_detector.core.ShakeCallback;
-import safety.com.br.android_shake_detector.core.ShakeDetector;
-import safety.com.br.android_shake_detector.core.ShakeOptions;
 
 public class AlarmDetailActivity extends AppCompatActivity {
 
     TimePicker timePicker;
     Button cancelBtn;
     Button saveBtn;
-
-    ShakeDetector shakeDetector;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,7 +41,6 @@ public class AlarmDetailActivity extends AppCompatActivity {
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         }
 
         timePicker = findViewById(R.id.timePicker);
@@ -59,29 +50,6 @@ public class AlarmDetailActivity extends AppCompatActivity {
         cancelBtn.setOnClickListener(cancelBtnClickListener);
         saveBtn.setOnClickListener(saveBtnClickListener);
 
-
-        ShakeOptions options = new ShakeOptions()
-                .background(true)
-                .interval(1000)
-                .shakeCount(5)
-                .sensibility(4.0f);
-
-        this.shakeDetector = new ShakeDetector(options).start(this, new ShakeCallback() {
-            @Override
-            public void onShake() {
-                Log.wtf("ShakeDetector", "Event : onShake");
-                Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                if (vibrator != null) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                    }
-                    else {
-                        vibrator.vibrate(500);
-                    }
-                }
-            }
-        });
-        Log.wtf("ShakeDetector", "ShakeDetector start");
     }
 
     @Override
@@ -106,7 +74,6 @@ public class AlarmDetailActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.wtf("AlarmDetailActivity", "onDestroy");
-        shakeDetector.destroy(getBaseContext());
     }
 
     private final View.OnClickListener cancelBtnClickListener = new View.OnClickListener() {
@@ -171,7 +138,7 @@ public class AlarmDetailActivity extends AppCompatActivity {
             Log.wtf("AlarmManager", "Alarm set at " + calendar.getTime() + ",Millis : " + calendar.getTimeInMillis());
 
             if (alarmMgr != null) {
-                alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+                alarmMgr.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, alarmIntent);
                 Log.wtf("AlarmManager", "Alarm set at " + calendar.getTime() + ",Millis : " + calendar.getTimeInMillis());
             }
 

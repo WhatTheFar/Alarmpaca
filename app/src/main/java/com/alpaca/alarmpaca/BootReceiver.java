@@ -5,21 +5,17 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
-import com.alpaca.alarmpaca.activity.AlarmDetailActivity;
 import com.alpaca.alarmpaca.model.Alarm;
 import com.alpaca.alarmpaca.util.RealmUtil;
 
 import java.util.Calendar;
 
 import io.realm.Realm;
-import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 
-/**
- * Created by Far on 11/28/2017 AD.
- */
 
 public class BootReceiver extends BroadcastReceiver {
 
@@ -45,7 +41,9 @@ public class BootReceiver extends BroadcastReceiver {
                 calendar.set(Calendar.SECOND, 0);
                 calendar.set(Calendar.MILLISECOND, 0);
 
-                alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmPi);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmPi);
+                }
 
                 Log.wtf("AlarmManager", "Alarm set at " + calendar.getTime() + ",Millis : " + calendar.getTimeInMillis());
 

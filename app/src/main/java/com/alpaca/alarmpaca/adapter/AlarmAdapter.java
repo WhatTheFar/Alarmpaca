@@ -13,10 +13,6 @@ import com.alpaca.alarmpaca.model.Alarm;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
 
-/**
- * Created by Far on 11/26/2017 AD.
- */
-
 public class AlarmAdapter extends RealmRecyclerViewAdapter<Alarm, AlarmAdapter.MyViewHolder> {
 
     public AlarmAdapter(OrderedRealmCollection<Alarm> data) {

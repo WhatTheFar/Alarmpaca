@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +13,10 @@ import com.alpaca.alarmpaca.R;
 import com.alpaca.alarmpaca.adapter.AlarmAdapter;
 import com.alpaca.alarmpaca.model.Alarm;
 import com.alpaca.alarmpaca.util.Contextor;
-import com.alpaca.alarmpaca.util.RealmUtil;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
-import io.realm.Sort;
 
 
 @SuppressWarnings("unused")
