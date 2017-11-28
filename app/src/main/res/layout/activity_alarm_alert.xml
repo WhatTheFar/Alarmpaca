@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#009688">
+
+
+    <ImageView
+        android:id="@+id/doubleAlpacaImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="6dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/doublealpaca" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:layout_above="@id/analog_clock"
+        android:src="@drawable/label1" />
+
+    <ImageView
+        android:id="@+id/shakingImageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/shakeit"
+        android:layout_above="@id/analog_clock"
+        android:scaleType="fitCenter"
+        />
+
+    <!--https://github.com/rosenpin/custom-analog-clock-view-->
+    <com.tomerrosenfeld.customanalogclockview.CustomAnalogClock
+        android:id="@+id/analog_clock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="8dp"
+        app:default_watchface="true" />
+
+
+    <TextClock
+        android:id="@+id/textClock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/analog_clock"
+        android:layout_marginStart="16dp"
+        android:focusableInTouchMode="false"
+        android:fontFamily="sans-serif-thin"
+        android:text="@string/time_sample"
+        android:textColor="@android:color/holo_orange_light"
+        android:textSize="64sp" />
+
+
+    <TextView
+        android:id="@+id/tvDateAlert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textClock"
+        android:layout_marginStart="18dp"
+        android:fontFamily="sans-serif-thin"
+        android:text="@string/date_sample"
+        android:textColor="#E0F2F1"
+        android:textSize="20sp" />
+
+
+</RelativeLayout>
