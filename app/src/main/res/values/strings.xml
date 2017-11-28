@@ -11,4 +11,6 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="time">Time</string>
     <string name="date">Date</string>
+    <string name="time_sample">10:41 PM</string>
+    <string name="date_sample">Mon , November 28</string>
 </resources>
