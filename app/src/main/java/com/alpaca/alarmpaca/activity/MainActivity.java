@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.alpaca.alarmpaca.R;
@@ -45,6 +47,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Window window = this.getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+        window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
         initInstance();
     }

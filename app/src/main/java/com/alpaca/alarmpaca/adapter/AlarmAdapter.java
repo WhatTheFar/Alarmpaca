@@ -67,9 +67,9 @@ public class AlarmAdapter extends RealmRecyclerViewAdapter<Alarm, AlarmAdapter.M
         void bind(Alarm data) {
 
             timeTv.setText(data.getTime());
-//            periodTv.setText(data.getPeriod());
+            periodTv.setText(data.getPeriod());
 //            dateTv.setText(data.getDate());
-//            toggleBtn.setChecked(data.isActivated());
+            toggleBtn.setChecked(data.isActivated());
         }
     }
 }

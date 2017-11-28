@@ -30,7 +30,7 @@ public class Alarm extends RealmObject {
 
     public Alarm(int hour, int minute, RealmList<Integer> repeat) {
         String id = "";
-        id = (hour <= 9 ? "0" : "");
+        id = hour <= 9 ? "0" : "";
         id = id.concat(Integer.toString(hour))
                 .concat(minute <= 9 ? "0" : "")
                 .concat(Integer.toString(minute));
@@ -44,12 +44,13 @@ public class Alarm extends RealmObject {
         this.id = Integer.parseInt(id + "" + repeatInt);
         this.hour = hour;
         this.minute = minute;
+        this.period = hour < 13 ? "AM" : "PM";
         this.repeat = repeat;
     }
 
     public String getTime() {
         String time;
-        time = (hour <= 9 ? "0" : "");
+        time = hour <= 9 ? "0" : "";
         time = time.concat(Integer.toString(hour))
                 .concat(":")
                 .concat(minute <= 9 ? "0" : "")

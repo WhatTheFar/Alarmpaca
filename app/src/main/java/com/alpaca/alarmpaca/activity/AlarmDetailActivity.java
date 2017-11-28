@@ -130,7 +130,6 @@ public class AlarmDetailActivity extends AppCompatActivity {
     private final View.OnClickListener saveBtnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Realm realm = RealmUtil.getRealmInstance();
             int hour = timePicker.getCurrentHour();
             int minute = timePicker.getCurrentMinute();
             RealmList<Integer> period = new RealmList<>();
@@ -139,7 +138,9 @@ public class AlarmDetailActivity extends AppCompatActivity {
             }
 
             Alarm alarm = new Alarm(hour, minute, period);
+            alarm.setActivated(true);
 
+            Realm realm = RealmUtil.getRealmInstance();
             realm.beginTransaction();
             realm.copyToRealmOrUpdate(alarm);
             realm.commitTransaction();
@@ -153,7 +154,7 @@ public class AlarmDetailActivity extends AppCompatActivity {
 
             alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             Intent intent = new Intent(AlarmDetailActivity.this, AlarmReceiver.class);
-            alarmIntent = PendingIntent.getBroadcast(AlarmDetailActivity.this, 0, intent, 0);
+            alarmIntent = PendingIntent.getBroadcast(AlarmDetailActivity.this, alarm.getId(), intent, 0);
 
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
@@ -169,10 +170,10 @@ public class AlarmDetailActivity extends AppCompatActivity {
 
             Log.wtf("AlarmManager", "Alarm set at " + calendar.getTime() + ",Millis : " + calendar.getTimeInMillis());
 
-//            if (alarmMgr != null) {
-//                alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
-//                Log.wtf("AlarmManager", "Alarm set at " + calendar.getTime() + ",Millis : " + calendar.getTimeInMillis());
-//            }
+            if (alarmMgr != null) {
+                alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+                Log.wtf("AlarmManager", "Alarm set at " + calendar.getTime() + ",Millis : " + calendar.getTimeInMillis());
+            }
 
             finish();
         }
