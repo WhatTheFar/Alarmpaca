@@ -1,7 +1,6 @@
 package com.alpaca.alarmpaca.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,6 @@ public class AlarmAdapter extends RealmRecyclerViewAdapter<Alarm, AlarmAdapter.M
         super(data, true);
         setHasStableIds(true);
     }
-
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
