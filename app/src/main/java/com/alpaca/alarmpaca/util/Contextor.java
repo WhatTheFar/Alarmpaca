@@ -14,6 +14,10 @@ public class Contextor {
         return instance;
     }
 
+    public static Context getContextInstance() {
+        return getInstance().getContext();
+    }
+
     private Context mContext;
 
     private Contextor() {

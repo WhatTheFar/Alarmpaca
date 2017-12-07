@@ -30,12 +30,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.AlarmDetailActivity"
             android:label="AlarmDetailActivity" />
         <activity
             android:name=".activity.AlarmAlertActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
 
         <receiver android:name=".AlarmReceiver" />
 
@@ -51,6 +54,7 @@
             android:name=".AlarmService"
             android:enabled="true"
             android:exported="false">
+
         </service>
 
     </application>

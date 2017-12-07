@@ -54,6 +54,7 @@ public class AlarmAlertActivity extends AppCompatActivity {
 
         Intent alertIntent = new Intent(this, AlarmService.class);
         startService(alertIntent);
+
     }
 
     @Override

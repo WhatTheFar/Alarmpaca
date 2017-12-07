@@ -1,6 +1,7 @@
 package com.alpaca.alarmpaca;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -35,14 +36,28 @@ public class AlarmService extends Service {
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.wtf("AlarmService", "onCreate");
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.wtf("AlarmService", "onStartCommand");
 
-        initAlarmRingtone();
-        initShakeDetector();
+        if (alarmRingtone == null) {
+            initAlarmRingtone();
+        }
+        if (shakeDetector == null) {
+            initShakeDetector();
+        }
 
-        alarmRingtone.play();
+        if (!alarmRingtone.isPlaying()) {
+            alarmRingtone.play();
+            Log.wtf("AlarmService", "Ringtone : play");
+        }
 
+        //Recreate the service when it is killed
         return START_STICKY;
     }
 
@@ -52,6 +67,8 @@ public class AlarmService extends Service {
         Log.wtf("AlarmService", "onDestroy");
 
         alarmRingtone.stop();
+        Log.wtf("AlarmService", "Ringtone : stop");
+
         shakeDetector.stopShakeDetector(AlarmService.this);
         shakeDetector.destroy(AlarmService.this);
         Log.wtf("ShakeDetector", "Destroy ShakeDetector");
@@ -72,6 +89,11 @@ public class AlarmService extends Service {
         } else {
             alarmRingtone.setStreamType(AudioManager.STREAM_ALARM);
         }
+
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setStreamVolume(AudioManager.STREAM_ALARM,
+                audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM),
+                0);
     }
 
     private void initShakeDetector() {
@@ -79,7 +101,7 @@ public class AlarmService extends Service {
         ShakeOptions options = new ShakeOptions()
                 .background(true)
                 .interval(1000)
-                .shakeCount(5)
+                .shakeCount(6)
                 .sensibility(4.0f);
 
         this.shakeDetector = new ShakeDetector(options);

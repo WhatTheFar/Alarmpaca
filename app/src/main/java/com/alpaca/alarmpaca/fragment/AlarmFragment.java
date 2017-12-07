@@ -1,26 +1,48 @@
 package com.alpaca.alarmpaca.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ahamed.multiviewadapter.BaseViewHolder;
+import com.ahamed.multiviewadapter.DataListManager;
+import com.ahamed.multiviewadapter.SelectableAdapter;
+import com.ahamed.multiviewadapter.listener.MultiSelectionChangedListener;
+import com.ahamed.multiviewadapter.util.ItemDecorator;
+import com.ahamed.multiviewadapter.util.SimpleDividerDecoration;
 import com.alpaca.alarmpaca.R;
+import com.alpaca.alarmpaca.activity.MainActivity;
 import com.alpaca.alarmpaca.adapter.AlarmAdapter;
+import com.alpaca.alarmpaca.adapter.AlarmBinder;
 import com.alpaca.alarmpaca.model.Alarm;
-import com.alpaca.alarmpaca.util.Contextor;
+import com.alpaca.alarmpaca.util.RealmUtil;
+
+import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
 
 @SuppressWarnings("unused")
 public class AlarmFragment extends Fragment {
+
+    private ActionMode actionMode;
+    private SelectableAdapter adapter;
+
+    private RecyclerView recyclerView;
+
+    private DataListManager<Alarm> selectableItemDataListManager;
 
     public AlarmFragment() {
         super();
@@ -59,19 +81,67 @@ public class AlarmFragment extends Fragment {
     private void initInstances(View rootView, Bundle savedInstanceState) {
         // Init 'View' instance(s) with rootView.findViewById here
 
-        RealmConfiguration realmConfig = (new RealmConfiguration.Builder())
-                .deleteRealmIfMigrationNeeded()
-                .build();
-        Realm realm = Realm.getInstance(realmConfig);
+        recyclerView = rootView.findViewById(R.id.recyclerView);
+
+        setUpAdapter();
+
+        setHasOptionsMenu(true);
+
+    }
+
+    @SuppressLint("RestrictedApi")
+    private void setUpAdapter() {
+        ItemDecorator itemDecorator =
+                new SimpleDividerDecoration(getContext(), SimpleDividerDecoration.VERTICAL);
+
+        adapter = new SelectableAdapter();
+        selectableItemDataListManager = new DataListManager<>(adapter);
+        selectableItemDataListManager.setMultiSelectionChangedListener(
+                selectedItems -> {
+                    if (selectedItems.size() == 0) {
+                        toggleActionMode();
+                    } else if (actionMode != null) {
+                        actionMode.setTitle(selectedItems.size() + " selected items");
+                    }
+                });
+
+        adapter.addDataManager(selectableItemDataListManager);
+        adapter.registerBinder(new AlarmBinder(itemDecorator,
+                (view, item) -> {
+                    toggleActionMode();
+                    return true;
+                }));
+
+        adapter.setSelectionMode(SelectableAdapter.SELECTION_MODE_MULTIPLE);
+
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        recyclerView.addItemDecoration(adapter.getItemDecorationManager());
+        recyclerView.setLayoutManager(llm);
+        recyclerView.setAdapter(adapter);
+
+        Realm realm = RealmUtil.getRealmInstance();
         RealmResults<Alarm> results = realm.where(Alarm.class).findAllSorted("id");
 
-        RecyclerView recyclerView = rootView.findViewById(R.id.recyclerView);
-        recyclerView.setAdapter(new AlarmAdapter(results));
-        recyclerView.setLayoutManager(new LinearLayoutManager(
-                Contextor.getInstance().getContext(),
-                LinearLayoutManager.VERTICAL,
-                false));
+        selectableItemDataListManager.set(results);
+    }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        Log.wtf("AlarmFragment", "onCreateOptionMenu");
+        menu.clear();
+        inflater.inflate(R.menu.menu_fragment_alarm, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_alarm_delete:
+                Log.wtf("AlarmFragment", "Menu : Delete clicked");
+                onDeleteMenuClicked();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -100,5 +170,55 @@ public class AlarmFragment extends Fragment {
     private void onRestoreInstanceState(Bundle savedInstanceState) {
         // Restore Instance State here
     }
+
+    private void onDeleteMenuClicked() {
+        toggleActionMode();
+        if (actionMode != null) {
+            actionMode.setTitle("0 selected item");
+        }
+    }
+
+    @SuppressLint("RestrictedApi")
+    private void toggleActionMode() {
+        if (null == actionMode) {
+            MainActivity activity = (MainActivity) getActivity();
+            adapter.startActionMode();
+            actionMode = activity.startSupportActionMode(actionModeCallback);
+        } else {
+            actionMode.finish();
+            actionMode = null;
+            adapter.stopActionMode();
+            selectableItemDataListManager.clearSelectedItems();
+        }
+
+        adapter.notifyDataSetChanged();
+    }
+
+    ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mode.setTitle("1 selected item");
+            mode.getMenuInflater().inflate(R.menu.menu_action_mode, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return true;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            return false;
+        }
+
+        @SuppressLint("RestrictedApi")
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            adapter.stopActionMode();
+            selectableItemDataListManager.clearSelectedItems();
+            AlarmFragment.this.actionMode = null;
+        }
+    };
 
 }

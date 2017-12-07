@@ -35,18 +35,31 @@ public class Alarm extends RealmObject {
         this.id = Integer.parseInt(id + "" + repeatInt);
         this.hour = hour;
         this.minute = minute;
-        this.period = hour < 13 ? "AM" : "PM";
+        this.period = hour < 12 ? "AM" : "PM";
         this.repeat = repeat;
     }
 
     public String getTime() {
         String time;
-        time = hour <= 9 ? "0" : "";
-        time = time.concat(Integer.toString(hour))
+        int temp = hour % 12;
+        if (temp == 0) {
+            temp = 12;
+        }
+        time = temp <= 9 ? "0" : "";
+        time = time.concat(Integer.toString(temp))
                 .concat(":")
                 .concat(minute <= 9 ? "0" : "")
                 .concat(Integer.toString(minute));
         return time;
+    }
+
+    public boolean isRepeat() {
+        boolean isRepeat = false;
+        for (Integer temp: repeat
+             ) {
+            isRepeat = (temp == 1);
+        }
+        return isRepeat;
     }
 
     public int getId() {
