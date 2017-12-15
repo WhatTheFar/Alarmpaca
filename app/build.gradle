@@ -36,8 +36,21 @@ dependencies {
     implementation 'com.github.devahamed:multi-view-adapter:1.2.3'
     implementation 'com.github.safetysystemtechnology:android-shake-detector:v1.2'
     implementation 'com.tomerrosenfeld.customanalogclockview:custom-analog-clock-view:1.1'
+    implementation 'com.github.dimorinny:floating-text-button:0.0.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation 'com.android.support:mediarouter-v7:26.1.0'
+
+    compile 'com.google.android.gms:play-services-auth:11.6.0'
+    compile 'pub.devrel:easypermissions:0.3.0'
+    compile('com.google.api-client:google-api-client-android:1.23.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    implementation 'com.google.apis:google-api-services-tasks:v1-rev48-1.23.0'
+//    compile('compile.google.apis:google-api-services-tasks:v1-rev48-1.23.0') {
+//        exclude group: 'org.apache.httpcomponents'
+//    }
+
+//    compile 'com.google.api-client:google-api-client:1.23.0'
 }

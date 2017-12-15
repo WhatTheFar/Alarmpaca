@@ -16,4 +16,15 @@
     <string name="action_delete">Delete</string>
     <string name="time_period_am">AM</string>
     <string name="select_indicator">Select Indicator</string>
+    <string name="repeat">Repeat</string>
+    <string name="sat">Sat</string>
+    <string name="sun">Sun</string>
+    <string name="fri">Fri</string>
+    <string name="thu">Thu</string>
+    <string name="wed">Wed</string>
+    <string name="tue">Tue</string>
+    <string name="mon">Mon</string>
+    <string name="sound">Sound</string>
+    <string name="alpaca_sound">Alpaca Sound</string>
+    <string name="snooze">Snooze</string>
 </resources>

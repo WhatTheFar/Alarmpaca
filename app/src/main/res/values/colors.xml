@@ -6,4 +6,6 @@
     <color name="colorActionMode">#353C50</color>
     <color name="colorItemBackgroundLight">#fff3f3f3</color>
     <color name="colorItemBackgroundDark">#BDBDBD</color>
+    <color name="white">#ffffffff</color>
+    <color name="black">#ff000000</color>
 </resources>

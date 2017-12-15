@@ -104,11 +104,11 @@ public class AlarmBinder extends ItemBinder<Alarm, AlarmBinder.ViewHolder> {
                         Log.wtf("Realm", "Update Success alarmId : " + alarm1.getId() + ", isActivated : " + isChecked);
                     });
 
-                    if (isChecked) {
-                        AlarmMgrUtil.setAlarm(Contextor.getContextInstance(), alarmId);
-                    } else {
-                        AlarmMgrUtil.cancelAlarm(Contextor.getContextInstance(), alarmId);
-                    }
+//                    if (isChecked) {
+//                        AlarmMgrUtil.setAlarm(Contextor.getContextInstance(), alarmId);
+//                    } else {
+//                        AlarmMgrUtil.cancelAlarm(Contextor.getContextInstance(), alarmId);
+//                    }
                 }
 
                 realm.close();

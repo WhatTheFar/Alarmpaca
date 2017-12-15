@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <TimePicker
-        android:id="@+id/timePicker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:headerBackground="@color/colorPrimary">
-
-    </TimePicker>
-
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,10 +17,26 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/clock_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:text="Repeat" />
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:background="?attr/selectableItemBackground"
+                android:drawablePadding="16dp"
+                android:drawableStart="@drawable/clock"
+                android:fontFamily="sans-serif-thin"
+                android:text="@string/time"
+                android:textAlignment="center"
+                android:textSize="80sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-thin"
+                android:gravity="center_horizontal"
+                android:text="@string/repeat"
+                android:textSize="25sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -38,9 +48,9 @@
                     android:id="@+id/checkTextMon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
                     android:layout_weight="1"
-                    android:text="Mon"
+                    android:text="@string/mon"
                     android:textAlignment="center" />
 
                 <CheckedTextView
@@ -48,7 +58,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Tue"
+                    android:text="@string/tue"
                     android:textAlignment="center" />
 
                 <CheckedTextView
@@ -56,7 +66,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Wed"
+                    android:text="@string/wed"
                     android:textAlignment="center" />
 
                 <CheckedTextView
@@ -64,7 +74,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Thu"
+                    android:text="@string/thu"
                     android:textAlignment="center" />
 
                 <CheckedTextView
@@ -72,7 +82,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Fri"
+                    android:text="@string/fri"
                     android:textAlignment="center" />
 
                 <CheckedTextView
@@ -80,26 +90,34 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Sat"
+                    android:text="@string/sat"
                     android:textAlignment="center" />
 
                 <CheckedTextView
                     android:id="@+id/checkTextSun"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="16dp"
+                    android:layout_marginEnd="16dp"
                     android:layout_weight="1"
-                    android:text="Sun"
+                    android:text="@string/sun"
                     android:textAlignment="center" />
 
             </LinearLayout>
 
+            <!--<ImageView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="20dp"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--android:src="@drawable/line_between" />-->
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
                 android:layout_marginTop="10dp"
-                android:text="Sound" />
+                android:fontFamily="sans-serif-thin"
+                android:gravity="center_horizontal"
+                android:text="@string/sound"
+                android:textSize="25sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -110,6 +128,7 @@
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
+                    android:contentDescription="@string/alpaca_sound"
                     android:src="@drawable/ic_alpaca" />
 
                 <SeekBar
@@ -121,57 +140,68 @@
 
             </LinearLayout>
 
-            <FrameLayout
+            <!--<ImageView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="20dp"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--android:src="@drawable/line_between" />-->
+
+
+            <Switch
+                android:id="@+id/snoozeSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="16dp"
-                    android:text="Snooze" />
-
-                <Switch
-                    android:id="@+id/snoozeSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_marginRight="16dp"
-                    android:textSize="20sp"
-                    android:textStyle="normal" />
+                android:layout_gravity="center"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="sans-serif-thin"
+                android:text="@string/snooze"
+                android:textStyle="normal"
+                android:textSize="25sp" />
 
 
-            </FrameLayout>
+            <!--<ImageView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="20dp"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--android:src="@drawable/line_between" />-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="#B2DFDB"
-                android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/cancelBtn"
-                    android:layout_width="0dp"
-                    android:layout_height="48dp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:background="@color/colorPrimary"
-                    android:text="Cancel" />
-
-                <Button
-                    android:id="@+id/saveBtn"
-                    android:layout_width="0dp"
-                    android:layout_height="48dp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:background="@color/colorPrimary"
-                    android:text="Save"
-                    android:textColor="@android:color/white" />
-
-            </LinearLayout>
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+    <ru.dimorinny.floatingtextbutton.FloatingTextButton
+        android:id="@+id/cancelBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginBottom="16dp"
+        app:floating_background_color="?attr/colorPrimary"
+        app:floating_icon="@drawable/close_circle"
+        app:floating_title="CANCEL"
+        app:floating_title_color="@color/white"
+        app:layout_anchor="@+id/scrollView"
+        app:layout_anchorGravity="bottom|center">
+
+    </ru.dimorinny.floatingtextbutton.FloatingTextButton>
+
+    <ru.dimorinny.floatingtextbutton.FloatingTextButton
+        android:id="@+id/saveBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginBottom="16dp"
+        app:floating_background_color="?attr/colorPrimary"
+        app:floating_icon="@drawable/checkbox_multiple_marked_outline"
+        app:floating_title="SAVE..."
+        app:floating_title_color="@color/white"
+        app:layout_anchor="@+id/scrollView"
+        app:layout_anchorGravity="bottom|center">
+
+    </ru.dimorinny.floatingtextbutton.FloatingTextButton>
+
+
+</android.support.design.widget.CoordinatorLayout>

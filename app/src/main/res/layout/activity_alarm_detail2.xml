@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TimePicker
+        android:id="@+id/timePicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:headerBackground="@color/colorPrimary">
+
+    </TimePicker>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:text="Repeat" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+
+                <CheckedTextView
+                    android:id="@+id/checkTextMon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_weight="1"
+                    android:text="Mon"
+                    android:textAlignment="center" />
+
+                <CheckedTextView
+                    android:id="@+id/checkTextTue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Tue"
+                    android:textAlignment="center" />
+
+                <CheckedTextView
+                    android:id="@+id/checkTextWed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Wed"
+                    android:textAlignment="center" />
+
+                <CheckedTextView
+                    android:id="@+id/checkTextThu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Thu"
+                    android:textAlignment="center" />
+
+                <CheckedTextView
+                    android:id="@+id/checkTextFri"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Fri"
+                    android:textAlignment="center" />
+
+                <CheckedTextView
+                    android:id="@+id/checkTextSat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Sat"
+                    android:textAlignment="center" />
+
+                <CheckedTextView
+                    android:id="@+id/checkTextSun"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp"
+                    android:layout_weight="1"
+                    android:text="Sun"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="10dp"
+                android:text="Sound" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_alpaca" />
+
+                <SeekBar
+                    android:id="@+id/seekBar"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="5" />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="16dp"
+                    android:text="Snooze" />
+
+                <Switch
+                    android:id="@+id/snoozeSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="16dp"
+                    android:textSize="20sp"
+                    android:textStyle="normal" />
+
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="#B2DFDB"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/cancelBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:text="Cancel" />
+
+                <Button
+                    android:id="@+id/saveBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:text="Save"
+                    android:textColor="@android:color/white" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

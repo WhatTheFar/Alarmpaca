@@ -1,5 +1,6 @@
 package com.alpaca.alarmpaca.activity;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
@@ -11,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -27,13 +27,14 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import ru.dimorinny.floatingtextbutton.FloatingTextButton;
 
-public class AlarmDetailActivity extends AppCompatActivity {
+public class AlarmDetailActivity2 extends AppCompatActivity {
 
-    FloatingTextButton cancelBtn;
-    FloatingTextButton saveBtn;
-    TextView clockTv;
+    FloatingTextButton cancelBtn, saveBtn;
+    TextView textClock;
+    private int mHour, mMinute;
+    TimePickerDialog timePickerDialog;
+    static int hourAttr, minuteAttr;
 
-    int mHour, mMinute;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,13 +50,41 @@ public class AlarmDetailActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+
         cancelBtn = findViewById(R.id.cancelBtn);
         saveBtn = findViewById(R.id.saveBtn);
-        clockTv = findViewById(R.id.clock_tv);
+        textClock = findViewById(R.id.textClock);
+        textClock.setOnClickListener(v -> {
+
+            if (v == textClock) {
+
+                // Get Current Time
+                final Calendar c = Calendar.getInstance();
+                mHour = c.get(Calendar.HOUR_OF_DAY);
+                mMinute = c.get(Calendar.MINUTE);
+
+                // Launch Time Picker Dialog
+                timePickerDialog = new TimePickerDialog(
+                        AlarmDetailActivity2.this,
+                        new TimePickerDialog.OnTimeSetListener() {
+
+                            @SuppressLint("SetTextI18n")
+                            @Override
+                            public void onTimeSet(TimePicker view,
+                                                  int hourOfDay,
+                                                  int minute) {
+                                hourAttr = hourOfDay;
+                                minuteAttr = minute;
+//                                textClock.setText(hourOfDay + ":" + minute);
+                                textClock.setText(getTimeString(hourOfDay,minute));
+                            }
+                        }, mHour, mMinute, false);
+                timePickerDialog.show();
+            }
+        });
 
         cancelBtn.setOnClickListener(cancelBtnClickListener);
         saveBtn.setOnClickListener(saveBtnClickListener);
-        clockTv.setOnClickListener(clockTvClickListener);
 
     }
 
@@ -89,8 +118,8 @@ public class AlarmDetailActivity extends AppCompatActivity {
         PendingIntent alarmIntent;
 
         alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(AlarmDetailActivity.this, AlarmReceiver.class);
-        alarmIntent = PendingIntent.getBroadcast(AlarmDetailActivity.this, 0, intent, 0);
+        Intent intent = new Intent(AlarmDetailActivity2.this, AlarmReceiver.class);
+        alarmIntent = PendingIntent.getBroadcast(AlarmDetailActivity2.this, 0, intent, 0);
 
         if (alarmMgr != null) {
             alarmMgr.cancel(alarmIntent);
@@ -101,8 +130,8 @@ public class AlarmDetailActivity extends AppCompatActivity {
 
     private final View.OnClickListener saveBtnClickListener = view -> {
 
-        int hour = mHour;
-        int minute = mMinute;
+        int hour = hourAttr;
+        int minute = minuteAttr;
         RealmList<Integer> period = new RealmList<>();
         for (int i = 0; i < 7; i++) {
             period.add(0);
@@ -117,29 +146,12 @@ public class AlarmDetailActivity extends AppCompatActivity {
 
         Log.wtf("Alarm", "New alarm : " + alarm.getId());
 
-//        AlarmMgrUtil.setAlarm(AlarmDetailActivity.this, alarm);
+        AlarmMgrUtil.setAlarm(AlarmDetailActivity2.this, alarm);
 
         finish();
     };
 
-    private final View.OnClickListener clockTvClickListener = view -> {
-        Calendar calendar = Calendar.getInstance();
-        mHour = calendar.get(Calendar.HOUR_OF_DAY);
-        mMinute = calendar.get(Calendar.MINUTE);
-
-        TimePickerDialog timePicker = new TimePickerDialog(
-                AlarmDetailActivity.this,
-                (timePicker1, hourOfDay, minute) -> {
-                    mHour = hourOfDay;
-                    mMinute = minute;
-
-                    clockTv.setText(Alarm.getTime(hourOfDay, minute));
-                },
-                mHour,
-                mMinute,
-                false);
-
-        timePicker.show();
-
-    };
+    public String getTimeString(int hour, int minute){
+        return (((""+hour).length() == 1)? ("0" + hour): "" + hour) + ":" + (((""+minute).length() == 1) ? ("0" + minute): "" + minute);
+    }
 }

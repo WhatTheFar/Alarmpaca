@@ -25,12 +25,13 @@
 
         </android.support.v7.widget.Toolbar>
 
-        <com.alpaca.alarmpaca.view.SlidingTabLayout
-            android:id="@+id/slidingTabLayout"
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:tabGravity="fill" >
 
-        </com.alpaca.alarmpaca.view.SlidingTabLayout>
+        </android.support.design.widget.TabLayout>
 
     </android.support.design.widget.AppBarLayout>
 

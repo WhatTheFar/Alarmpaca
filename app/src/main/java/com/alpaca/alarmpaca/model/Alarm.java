@@ -53,6 +53,20 @@ public class Alarm extends RealmObject {
         return time;
     }
 
+    public static String getTime(int hour, int minute) {
+        String time;
+        int temp = hour % 12;
+        if (temp == 0) {
+            temp = 12;
+        }
+        time = temp <= 9 ? "0" : "";
+        time = time.concat(Integer.toString(temp))
+                .concat(":")
+                .concat(minute <= 9 ? "0" : "")
+                .concat(Integer.toString(minute));
+        return time;
+    }
+
     public boolean isRepeat() {
         boolean isRepeat = false;
         for (Integer temp: repeat

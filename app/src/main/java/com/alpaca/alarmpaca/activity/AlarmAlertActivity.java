@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -87,6 +90,13 @@ public class AlarmAlertActivity extends AppCompatActivity {
         textClock.startAnimation(fadeInAnim);
         shakingImageView.startAnimation(shakeAnim);
 
+
+        Handler handler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+            }
+        };
     }
 
     protected final BroadcastReceiver alarmBroadcastReceiver = new BroadcastReceiver() {
@@ -96,4 +106,5 @@ public class AlarmAlertActivity extends AppCompatActivity {
             finish();
         }
     };
+
 }
