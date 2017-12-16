@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.alpaca.alarmpaca.R;
 import com.alpaca.alarmpaca.fragment.AlarmFragment;
+import com.alpaca.alarmpaca.fragment.TaskFragment;
 import com.alpaca.alarmpaca.view.SlidingTabLayout;
 
 public class MainActivity extends AppCompatActivity {
@@ -161,6 +162,8 @@ public class MainActivity extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position) {
+                case 0:
+                    return TaskFragment.newInstance();
                 case 1:
                     return AlarmFragment.newInstance();
             }
