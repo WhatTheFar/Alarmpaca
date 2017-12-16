@@ -32,6 +32,8 @@ public class AlarmMgrUtil {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
+        calendar.getTime();
+
         if (System.currentTimeMillis() >= calendar.getTimeInMillis()) {
             calendar.setTimeInMillis(calendar.getTimeInMillis() + AlarmManager.INTERVAL_DAY);
         }

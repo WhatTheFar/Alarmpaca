@@ -1,5 +1,9 @@
 package com.alpaca.alarmpaca.util;
 
+import com.alpaca.alarmpaca.model.Alarm;
+
+import java.io.Closeable;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
