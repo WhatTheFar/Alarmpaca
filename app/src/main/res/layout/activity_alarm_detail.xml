@@ -20,12 +20,12 @@
                 android:id="@+id/clock_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
                 android:background="?attr/selectableItemBackground"
                 android:drawablePadding="16dp"
                 android:drawableStart="@drawable/clock"
                 android:fontFamily="sans-serif-thin"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
                 android:text="@string/time"
                 android:textAlignment="center"
                 android:textSize="80sp" />
@@ -38,69 +38,24 @@
                 android:text="@string/repeat"
                 android:textSize="25sp" />
 
+
+            <!--Library : https://github.com/TouchBoarder/weekdays-buttons-bar-->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_marginTop="6dp"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <CheckedTextView
-                    android:id="@+id/checkTextMon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_weight="1"
-                    android:text="@string/mon"
-                    android:textAlignment="center" />
+                <!--This ViewStub will be replaced by a RecyclerView displaying the weekdays -->
+                <ViewStub
+                    android:id="@+id/weekdays_stub"
+                    android:layout_width="match_parent"
+                    android:layout_height="?actionBarSize" />
 
-                <CheckedTextView
-                    android:id="@+id/checkTextTue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/tue"
-                    android:textAlignment="center" />
-
-                <CheckedTextView
-                    android:id="@+id/checkTextWed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/wed"
-                    android:textAlignment="center" />
-
-                <CheckedTextView
-                    android:id="@+id/checkTextThu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/thu"
-                    android:textAlignment="center" />
-
-                <CheckedTextView
-                    android:id="@+id/checkTextFri"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/fri"
-                    android:textAlignment="center" />
-
-                <CheckedTextView
-                    android:id="@+id/checkTextSat"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/sat"
-                    android:textAlignment="center" />
-
-                <CheckedTextView
-                    android:id="@+id/checkTextSun"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:layout_weight="1"
-                    android:text="@string/sun"
-                    android:textAlignment="center" />
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical" />
 
             </LinearLayout>
 
@@ -157,8 +112,8 @@
                 android:layout_marginTop="5dp"
                 android:fontFamily="sans-serif-thin"
                 android:text="@string/snooze"
-                android:textStyle="normal"
-                android:textSize="25sp" />
+                android:textSize="25sp"
+                android:textStyle="normal" />
 
 
             <!--<ImageView-->
