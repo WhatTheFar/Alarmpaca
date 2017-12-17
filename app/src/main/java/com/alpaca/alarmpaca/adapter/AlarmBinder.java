@@ -55,6 +55,7 @@ public class AlarmBinder extends ItemBinder<Alarm, AlarmBinder.ViewHolder> {
 
     public interface OnItemClickListener {
         void onItemClick(View view, Alarm item);
+
         void onItemLongClick(View view, Alarm item);
     }
 
@@ -63,10 +64,8 @@ public class AlarmBinder extends ItemBinder<Alarm, AlarmBinder.ViewHolder> {
         private TextView timeTv;
         private TextView periodTv;
         private TextView dateTv;
-        private SwitchCompat toggleBtn;
+        private SwitchCompat switchCompat;
         private ImageView ivIndicator;
-
-        private int alarmId;
 
         ViewHolder(View itemView,
                    final AlarmBinder.OnItemClickListener listener) {
@@ -75,7 +74,7 @@ public class AlarmBinder extends ItemBinder<Alarm, AlarmBinder.ViewHolder> {
             timeTv = itemView.findViewById(R.id.timeTv);
             periodTv = itemView.findViewById(R.id.periodTv);
             dateTv = itemView.findViewById(R.id.dateTv);
-            toggleBtn = itemView.findViewById(R.id.toggleBtn);
+            switchCompat = itemView.findViewById(R.id.toggleBtn);
             ivIndicator = itemView.findViewById(R.id.iv_selection_indicator);
 
             setItemLongClickListener((view, item) -> {
@@ -94,22 +93,25 @@ public class AlarmBinder extends ItemBinder<Alarm, AlarmBinder.ViewHolder> {
                 }
             });
 
-            toggleBtn.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            switchCompat.setOnCheckedChangeListener((compoundButton, isChecked) -> {
                 Realm realm = RealmUtil.getRealmInstance();
 
-                if (alarmId != 0) {
+                if (isChecked != getItem().isActivated()) {
+                    int id = getItem().getId();
                     realm.executeTransactionAsync(realm1 -> {
-                        Alarm alarm1 = realm1.where(Alarm.class).equalTo("id", alarmId).findFirst();
+                        Alarm alarm1 = realm1.where(Alarm.class).equalTo("id", id).findFirst();
                         alarm1.setActivated(isChecked);
-                        Log.wtf("Realm", "Update Success alarmId : " + alarm1.getId() + ", isActivated : " + isChecked);
+                        Log.wtf("Realm", "Update Success alarmId : " + id + ", isActivated : " + isChecked);
                     });
+
+                }
 
 //                    if (isChecked) {
 //                        AlarmMgrUtil.setAlarm(Contextor.getContextInstance(), alarmId);
 //                    } else {
 //                        AlarmMgrUtil.cancelAlarm(Contextor.getContextInstance(), alarmId);
 //                    }
-                }
+
 
                 realm.close();
             });
@@ -117,11 +119,9 @@ public class AlarmBinder extends ItemBinder<Alarm, AlarmBinder.ViewHolder> {
 
         private void bind(Alarm item) {
 
-            this.alarmId = item.getId();
-
             timeTv.setText(item.getTime());
             periodTv.setText(item.getPeriod());
-
+            dateTv.setText(item.getDateString());
 
             if (isInActionMode()) {
 
@@ -130,7 +130,7 @@ public class AlarmBinder extends ItemBinder<Alarm, AlarmBinder.ViewHolder> {
                     fadeIn.setInterpolator(new DecelerateInterpolator());
                     fadeIn.setDuration(400);
 
-                    toggleBtn.setVisibility(View.GONE);
+                    switchCompat.setVisibility(View.GONE);
                     ivIndicator.setVisibility(View.VISIBLE);
 
                     ivIndicator.startAnimation(fadeIn);
@@ -142,18 +142,18 @@ public class AlarmBinder extends ItemBinder<Alarm, AlarmBinder.ViewHolder> {
 
             } else {
 
-                if (toggleBtn.getVisibility() == View.GONE) {
+                if (switchCompat.getVisibility() == View.GONE) {
                     Animation fadeIn = new AlphaAnimation(0.0f, 1.0f);
                     fadeIn.setInterpolator(new DecelerateInterpolator());
                     fadeIn.setDuration(400);
 
-                    toggleBtn.setVisibility(View.VISIBLE);
+                    switchCompat.setVisibility(View.VISIBLE);
                     ivIndicator.setVisibility(View.GONE);
 
-                    toggleBtn.startAnimation(fadeIn);
+                    switchCompat.startAnimation(fadeIn);
                 }
 
-                toggleBtn.setChecked(item.isActivated());
+                switchCompat.setChecked(item.isActivated());
 
             }
 

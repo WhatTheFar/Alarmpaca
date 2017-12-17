@@ -18,6 +18,12 @@ public class IntroFragment extends Fragment {
     private int mBackgroundColor, mPage;
     Button startBtn;
 
+    IntroFragmentListener mListener;
+
+    public interface IntroFragmentListener {
+        void onLoginBtnClicked();
+    }
+
     public static IntroFragment newInstance(int backgroundColor, int page) {
         IntroFragment frag = new IntroFragment();
         Bundle b = new Bundle();
@@ -38,6 +44,10 @@ public class IntroFragment extends Fragment {
         if (!getArguments().containsKey(PAGE))
             throw new RuntimeException("Fragment must contain a \"" + PAGE + "\" argument!");
         mPage = getArguments().getInt(PAGE);
+
+        if (getActivity() instanceof IntroFragmentListener) {
+            mListener = (IntroFragmentListener) getActivity();
+        }
     }
 
     @Override
@@ -58,10 +68,10 @@ public class IntroFragment extends Fragment {
 
         if (mPage == 1) {
             startBtn = view.findViewById(R.id.btn_start);
-            startBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Handle Log in Button here
+            startBtn.setOnClickListener(v -> {
+                // Handle Log in Button here
+                if (mListener != null) {
+                    mListener.onLoginBtnClicked();
                 }
             });
         }

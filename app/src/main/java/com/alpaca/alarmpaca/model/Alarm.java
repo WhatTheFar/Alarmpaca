@@ -1,5 +1,11 @@
 package com.alpaca.alarmpaca.model;
 
+import android.app.AlarmManager;
+
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -26,8 +32,8 @@ public class Alarm extends RealmObject {
                 .concat(minute <= 9 ? "0" : "")
                 .concat(Integer.toString(minute));
         String repeatId = "";
-        for (Integer a: repeat
-             ) {
+        for (Integer a : repeat
+                ) {
             repeatId = repeatId.concat(a.toString());
         }
         int repeatInt = Integer.parseInt(repeatId, 2);
@@ -57,10 +63,33 @@ public class Alarm extends RealmObject {
         return time;
     }
 
+    public String getDateString() {
+        Calendar calendar = getCalendarInstance();
+
+        if (System.currentTimeMillis() >= calendar.getTimeInMillis()) {
+            calendar.setTimeInMillis(calendar.getTimeInMillis() + AlarmManager.INTERVAL_DAY);
+            return DateFormat.getDateInstance()
+                    .format(getCalendarInstance().getTime());
+        } else {
+            return "Today";
+        }
+    }
+
+    public Calendar getCalendarInstance() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return calendar;
+    }
+
     public boolean isRepeat() {
         boolean isRepeat = false;
-        for (Integer temp: repeat
-             ) {
+        for (Integer temp : repeat
+                ) {
             isRepeat = (temp == 1);
         }
         return isRepeat;

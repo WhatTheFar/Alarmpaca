@@ -23,25 +23,47 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+
+        <activity
+            android:name=".activity.IntroActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
+
         <activity
             android:name=".activity.AlarmDetailActivity"
             android:label="AlarmDetailActivity" />
+
+        <activity
+            android:name=".activity.TaskDetailActivity"
+            android:label="TaskDetailActivity" />
+
         <activity
             android:name=".activity.AlarmAlertActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <activity android:name=".activity.TaskActivity" />
+
+        <activity android:name=".activity.LoginActivity" />
+
+        <service
+            android:name=".AlarmService"
+            android:enabled="true"
+            android:exported="false" />
+
         <receiver android:name=".AlarmReceiver" />
+
         <receiver
             android:name=".BootReceiver"
             android:enabled="false">
@@ -50,27 +72,6 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name=".AlarmService"
-            android:enabled="true"
-            android:exported="false" />
-
-        <activity android:name=".activity.TaskActivity">
-
-        </activity>
-        <activity android:name=".activity.LoginActivity">
-
-
-        </activity>
-
-        <activity android:name=".activity.TaskDetailActivity">
-
-        </activity>
-
-        <activity android:name=".activity.IntroActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
     </application>
 
 </manifest>

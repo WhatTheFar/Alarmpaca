@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -69,8 +70,8 @@ public class TaskBinder extends ItemBinder<RealmTasks, TaskBinder.ViewHolder> {
         private TextView titleTv;
         private TextView detailTv;
         private TextView dueDateTv;
-        private CircleCheckBox checkBox;
-//        private String id;
+        private CheckBox checkBox;
+        private ImageView ivIndicator;
 
         ViewHolder(View itemView,
                    final TaskBinder.OnItemClickListener listener) {
@@ -80,8 +81,7 @@ public class TaskBinder extends ItemBinder<RealmTasks, TaskBinder.ViewHolder> {
             detailTv = itemView.findViewById(R.id.shorten_taskDetail);
             dueDateTv = itemView.findViewById(R.id.task_date);
             checkBox = itemView.findViewById(R.id.checkbox_taskTitle);
-
-            //ivIndicator = itemView.findViewById(R.id.iv_selection_indicator);
+            ivIndicator = itemView.findViewById(R.id.iv_selection_indicator);
 
             setItemLongClickListener((view, item) -> {
                  toggleItemSelection();
@@ -103,38 +103,52 @@ public class TaskBinder extends ItemBinder<RealmTasks, TaskBinder.ViewHolder> {
 
                 listener.onItemCheckedChange(compoundButton, getItem(), isChecked);
 
-//                Realm realm = RealmUtil.getRealmInstance();
-
-//                if (id != null && isChecked) {
-//                    realm.executeTransactionAsync(realm1 -> {
-//                        RealmTasks task = realm1.where(RealmTasks.class).equalTo("id", id).findFirst();
-//                        task.setStatus("completed");
-//                        Log.wtf("Realm", "Update Success id : " + task.getId() + ", status : " + task.getStatus());
-//                    });
-//                } else {
-//                    realm.executeTransaction(realm1 -> {
-//                        RealmTasks task = realm1.where(RealmTasks.class).equalTo("id", id).findFirst();
-//                        task.setStatus("needsAction");
-//                        Log.wtf("Realm", "Update Success id : " + task.getId() + ", status : " + task.getStatus());
-//                    });
-//                }
-
-//                realm.close();
-
             });
         }
 
         private void bind(RealmTasks item) {
 
-//            this.id = item.getId();
-
             titleTv.setText(item.getTitle());
             detailTv.setText(item.getNotes() == null ? "" : item.getNotes());
             dueDateTv.setText(item.getDue() == null ? "" : DateFormat.getDateInstance().format(item.getDue()));
 
-            Log.wtf("TaskBinder", "item : " + item.getTitle() + " " + item.getStatus());
-            if (Objects.equals(item.getStatus(), "completed")) {
-                checkBox.setChecked(true);
+//            Log.wtf("TaskBinder", "item : " + item.getTitle() + " " + item.getStatus());
+
+
+            if (isInActionMode()) {
+
+                if (ivIndicator.getVisibility() == View.GONE) {
+                    Animation fadeIn = new AlphaAnimation(0.0f, 1.0f);
+                    fadeIn.setInterpolator(new DecelerateInterpolator());
+                    fadeIn.setDuration(400);
+
+                    checkBox.setVisibility(View.GONE);
+                    ivIndicator.setVisibility(View.VISIBLE);
+
+                    ivIndicator.startAnimation(fadeIn);
+                }
+
+                ivIndicator.setImageResource(
+                        isItemSelected() ? R.drawable.drawable_selection_indicator
+                                : R.drawable.drawable_circle);
+
+            } else {
+
+                if (checkBox.getVisibility() == View.GONE) {
+                    Animation fadeIn = new AlphaAnimation(0.0f, 1.0f);
+                    fadeIn.setInterpolator(new DecelerateInterpolator());
+                    fadeIn.setDuration(400);
+
+                    checkBox.setVisibility(View.VISIBLE);
+                    ivIndicator.setVisibility(View.GONE);
+
+                    checkBox.startAnimation(fadeIn);
+                }
+
+                if (Objects.equals(item.getStatus(), "completed")) {
+                    checkBox.setChecked(true);
+                }
+
             }
 
         }

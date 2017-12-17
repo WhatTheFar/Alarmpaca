@@ -30,4 +30,12 @@
     <string name="login">Login</string>
     <string name="clear">Clear</string>
     <string name="clear_task">Clear Task</string>
+    <string name="title">Title</string>
+    <string name="notes">Notes</string>
+    <string name="select_date">Select Date</string>
+    <string name="alpaca_icon">Alpaca Icon</string>
+    <string name="date_sample_short">19 Nov 2017</string>
+    <string name="shorten_task_note">Shorten task note</string>
+    <string name="clear_completed">Clear Completed</string>
+    <string name="action_complete">Complete</string>
 </resources>

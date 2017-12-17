@@ -32,17 +32,18 @@ public class TaskDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_task_detail);
 
         initInstances(savedInstanceState);
-
-
     }
 
     private void initInstances(Bundle savedInstanceState) {
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         calendar = Calendar.getInstance();
         titleEditText = findViewById(R.id.title_et);
         noteEditText = findViewById(R.id.note_et);
-        completeCheckBox = findViewById(R.id.complete_cb);
         dueDateTv = findViewById(R.id.due_date_tv);
-
 
         //        Library : https://github.com/code-mc/linear-time-picker
         LinearDatePickerDialog.Builder dialogBuilder = LinearDatePickerDialog.Builder.with(TaskDetailActivity.this)

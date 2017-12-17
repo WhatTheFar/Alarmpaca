@@ -17,112 +17,80 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="54dp"
+                android:layout_height="wrap_content"
                 android:background="#B2DFDB"
                 android:orientation="horizontal">
-
 
                 <EditText
                     android:id="@+id/title_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:hint="Title"
+                    android:layout_margin="16dp"
+                    android:hint="@string/title"
                     android:textSize="30sp" />
 
             </LinearLayout>
 
-            <CheckBox
-                android:id="@+id/complete_cb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:text="Completed" />
-
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp"
+                android:drawablePadding="16dp"
+                android:drawableStart="@drawable/ic_note_text_black_24dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/notes"
+                android:textSize="24sp" />
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
-                    android:src="@drawable/ic_event_note_black_24dp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="3dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="3dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="Notes"
-                    android:textSize="20sp" />
-
-            </LinearLayout>
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginTop="3dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:background="@color/colorBetweenLine"></FrameLayout>
+                android:background="@color/colorBetweenLine" />
 
 
             <EditText
                 android:id="@+id/note_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:hint="Notes" />
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:hint="@string/notes" />
 
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
-                    android:src="@drawable/ic_access_time_black_24dp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="3dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="DUE DATE"
-                    android:textSize="20sp" />
-            </LinearLayout>
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:drawablePadding="16dp"
+                android:drawableStart="@drawable/ic_clock_black_24dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/date"
+                android:textSize="24sp" />
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginTop="3dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:background="@color/colorBetweenLine">
-
-            </FrameLayout>
+                android:background="@color/colorBetweenLine" />
 
             <TextView
                 android:id="@+id/due_date_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:background="?android:attr/selectableItemBackground"
-                android:hint="Select Date"
+                android:hint="@string/select_date"
                 android:textSize="20sp" />
 
             <FrameLayout
@@ -132,9 +100,10 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginTop="40dp"
                     android:layout_gravity="center_horizontal"
-                    android:src="@drawable/ic_alpaca" />
+                    android:layout_marginTop="40dp"
+                    android:src="@drawable/ic_alpaca"
+                    android:contentDescription="@string/alpaca_icon" />
 
             </FrameLayout>
 
@@ -149,7 +118,7 @@
         android:layout_gravity="start"
         android:layout_marginBottom="16dp"
         app:floating_background_color="?attr/colorPrimary"
-        app:floating_icon="@drawable/close_circle"
+        app:floating_icon="@drawable/ic_close_circle_white_24dp"
         app:floating_title="CANCEL"
         app:floating_title_color="@color/white"
         app:layout_anchor="@+id/nestedScrollView"
@@ -164,14 +133,13 @@
         android:layout_gravity="end"
         android:layout_marginBottom="16dp"
         app:floating_background_color="?attr/colorPrimary"
-        app:floating_icon="@drawable/checkbox_multiple_marked_outline"
+        app:floating_icon="@drawable/ic_checkbox_multiple_marked_white_24dp"
         app:floating_title="SAVE..."
         app:floating_title_color="@color/white"
         app:layout_anchor="@+id/nestedScrollView"
         app:layout_anchorGravity="bottom|center">
 
     </ru.dimorinny.floatingtextbutton.FloatingTextButton>
-
 
 
 </android.support.design.widget.CoordinatorLayout>

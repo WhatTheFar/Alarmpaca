@@ -5,7 +5,7 @@
     <item
         android:id="@+id/action_task_clear"
         android:orderInCategory="100"
-        android:title="@string/clear_task"
+        android:title="@string/clear_completed"
         app:showAsAction="never" />
 
     <item

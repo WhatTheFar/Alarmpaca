@@ -17,18 +17,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.ahamed.multiviewadapter.DataListManager;
 import com.ahamed.multiviewadapter.SelectableAdapter;
 import com.ahamed.multiviewadapter.util.ItemDecorator;
 import com.ahamed.multiviewadapter.util.SimpleDividerDecoration;
 import com.alpaca.alarmpaca.R;
-import com.alpaca.alarmpaca.activity.LoginActivity;
 import com.alpaca.alarmpaca.activity.MainActivity;
-import com.alpaca.alarmpaca.activity.TaskActivity;
-import com.alpaca.alarmpaca.adapter.AlarmBinder;
+import com.alpaca.alarmpaca.adapter.BlankBinder;
 import com.alpaca.alarmpaca.adapter.TaskBinder;
-import com.alpaca.alarmpaca.model.Alarm;
 import com.alpaca.alarmpaca.model.RealmTasks;
 import com.alpaca.alarmpaca.util.RealmUtil;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -44,9 +42,7 @@ import com.google.api.services.tasks.TasksScopes;
 import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.Tasks;
 
-import java.io.IOException;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -54,7 +50,6 @@ import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import io.realm.Sort;
 
 
 @SuppressWarnings("unused")
@@ -154,11 +149,6 @@ public class TaskFragment extends Fragment {
                 });
 
         adapter.addDataManager(selectableItemDataListManager);
-//        adapter.registerBinder(new TaskBinder(itemDecorator,
-//                (view, item) -> {
-//                    toggleActionMode();
-//                    return true;
-//                }));
 
         adapter.registerBinder(new TaskBinder(itemDecorator,
                 new TaskBinder.OnItemClickListener() {
@@ -189,6 +179,12 @@ public class TaskFragment extends Fragment {
                         }
                     }
                 }));
+
+        DataListManager<BlankBinder.BlankItem> blankItemDataListManager = new DataListManager<>(adapter);
+        adapter.addDataManager(blankItemDataListManager);
+        adapter.registerBinder(new BlankBinder());
+
+        blankItemDataListManager.set(BlankBinder.BlankItem.getOneBlankItemList());
 
         adapter.setSelectionMode(SelectableAdapter.SELECTION_MODE_MULTIPLE);
 
@@ -297,7 +293,7 @@ public class TaskFragment extends Fragment {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             mode.setTitle("1 selected item");
-            mode.getMenuInflater().inflate(R.menu.menu_action_mode, menu);
+            mode.getMenuInflater().inflate(R.menu.menu_action_mode_task, menu);
             return true;
         }
 
@@ -306,8 +302,28 @@ public class TaskFragment extends Fragment {
             return true;
         }
 
+        @SuppressLint("RestrictedApi")
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.action_complete:
+                    Log.wtf("TaskActionMode", "Complete menu clicked");
+                    List<RealmTasks> selectedTask = selectableItemDataListManager.getSelectedItems();
+                    for (RealmTasks task: selectedTask
+                         ) {
+//                        Log.wtf("TaskActionMode", task.getTitle());
+                        Realm realm = RealmUtil.getRealmInstance();
+                        realm.beginTransaction();
+                        task.setStatus("completed");
+                        realm.commitTransaction();
+                        realm.close();
+
+                        TaskManager taskManager = new TaskManager(mCredential);
+                        taskManager.updateDataToApi(task.getId());
+                    }
+                    toggleActionMode();
+                    break;
+            }
             return false;
         }
 
@@ -395,25 +411,21 @@ public class TaskFragment extends Fragment {
                                     .equalTo("id", id)
                                     .findFirst();
 
-//                            taskToUpdate.setId(realmTask.getId());
-//                            taskToUpdate.setTitle(realmTask.getTitle());
-//                            if (realmTask.getNotes() != null) {
-//                                taskToUpdate.setNotes(realmTask.getNotes());
-//                            }
-//                            taskToUpdate.setTitle("hello");
+                            taskToUpdate.setTitle(realmTask.getTitle());
+                            if (realmTask.getNotes() != null) {
+                                taskToUpdate.setNotes(realmTask.getNotes());
+                            }
                             if (Objects.equals(realmTask.getStatus(), "needsAction")) {
                                 taskToUpdate.setCompleted(null);
                                 taskToUpdate.setStatus("needsAction");
                             } else {
                                 taskToUpdate.setStatus("completed");
                             }
-                            Log.wtf("TaskManager", "doInBackground : " + taskToUpdate.getId());
-                            Log.wtf("TaskManager", "doInBackground : " + id);
-                            Log.wtf("TaskManager", "doInBackground : " + taskToUpdate.toPrettyString());
+//                            Log.wtf("TaskManager", "doInBackground : " + taskToUpdate.toPrettyString());
 
                             Task updatedTask = mService.tasks().update("@default", taskToUpdate.getId(), taskToUpdate).execute();
                             realm.close();
-                            Log.wtf("TaskManager", "doInBackground : " + updatedTask.toPrettyString());
+                            Log.wtf("TaskManager", "doInBackground : updatedTask " + updatedTask.toPrettyString());
                             return ACTION_UPDATE_DATA;
 
                         case ACTION_INSERT_DATA:
@@ -499,8 +511,14 @@ public class TaskFragment extends Fragment {
                     case ACTION_SAVE_DATA:
                         setDataToAdapter();
                         break;
+                    case ACTION_DELETE_DATA:
+                        break;
                     case ACTION_UPDATE_DATA:
-                        Log.wtf("TaskManager", "onPostExecute : ACTION_UPDATE_DATA");
+                        break;
+                    case ACTION_INSERT_DATA:
+                        break;
+                    case ACTION_CLEAR_DATA:
+                        break;
                 }
             }
         }
@@ -512,7 +530,6 @@ public class TaskFragment extends Fragment {
 
         @Override
         protected void onCancelled() {
-//            mProgress.hide();
             if (mLastError != null) {
                 if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
                     showGooglePlayServicesAvailabilityErrorDialog(
@@ -523,12 +540,12 @@ public class TaskFragment extends Fragment {
                             ((UserRecoverableAuthIOException) mLastError).getIntent(),
                             TaskFragment.REQUEST_AUTHORIZATION);
                 } else {
-//                    mOutputText.setText("The following error occurred:\n"
-//                            + mLastError.getMessage());
+                    Toast.makeText(getContext(), "The following error occurred:\n"
+                            + mLastError.getMessage(), Toast.LENGTH_SHORT).show();
                     mLastError.printStackTrace();
                 }
             } else {
-//                mOutputText.setText("Request cancelled.");
+                Toast.makeText(getContext(), "Request cancelled", Toast.LENGTH_SHORT).show();
             }
         }
     }

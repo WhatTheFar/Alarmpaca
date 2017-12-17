@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -37,6 +38,9 @@ public class AlarmDetailActivity extends AppCompatActivity implements WeekdaysDa
     TextView clockTv;
 
     int mHour, mMinute;
+    Alarm intentAlarm;
+
+    public static final String ALARM_ID_EXTRA = "alarm_id_extra";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,6 +67,20 @@ public class AlarmDetailActivity extends AppCompatActivity implements WeekdaysDa
         saveBtn.setOnClickListener(saveBtnClickListener);
         clockTv.setOnClickListener(clockTvClickListener);
 
+        int alarmId = getIntent().getIntExtra(ALARM_ID_EXTRA, -1);
+        if (alarmId != -1) {
+            Realm realm = RealmUtil.getRealmInstance();
+            intentAlarm = realm.where(Alarm.class).equalTo("id", alarmId).findFirst();
+            clockTv.setText(intentAlarm.getTime());
+
+            mHour = intentAlarm.getHour();
+            mMinute = intentAlarm.getMinute();
+        } else {
+            Calendar calendar = Calendar.getInstance();
+            mHour = calendar.get(Calendar.HOUR_OF_DAY);
+            mMinute = calendar.get(Calendar.MINUTE);
+            clockTv.setText(Alarm.getTime(mHour, mMinute));
+        }
     }
 
     @Override
@@ -90,18 +108,6 @@ public class AlarmDetailActivity extends AppCompatActivity implements WeekdaysDa
     }
 
     private final View.OnClickListener cancelBtnClickListener = view -> {
-
-        AlarmManager alarmMgr;
-        PendingIntent alarmIntent;
-
-        alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(AlarmDetailActivity.this, AlarmReceiver.class);
-        alarmIntent = PendingIntent.getBroadcast(AlarmDetailActivity.this, 0, intent, 0);
-
-        if (alarmMgr != null) {
-            alarmMgr.cancel(alarmIntent);
-            Log.wtf("AlarmManager", "Cancel all alarm");
-        }
         finish();
     };
 
@@ -118,20 +124,23 @@ public class AlarmDetailActivity extends AppCompatActivity implements WeekdaysDa
         alarm.setActivated(true);
 
         Realm realm = RealmUtil.getRealmInstance();
-        realm.executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(alarm));
+        realm.executeTransaction(realm1 -> {
+            realm1.copyToRealmOrUpdate(alarm);
+        });
         realm.close();
 
         Log.wtf("Alarm", "New alarm : " + alarm.getId());
 
 //        AlarmMgrUtil.setAlarm(AlarmDetailActivity.this, alarm);
-
+        if (intentAlarm != null) {
+            Intent intent = new Intent();
+            intent.putExtra(ALARM_ID_EXTRA, intentAlarm.getId());
+            setResult(RESULT_OK, intent);
+        }
         finish();
     };
 
     private final View.OnClickListener clockTvClickListener = view -> {
-        Calendar calendar = Calendar.getInstance();
-        mHour = calendar.get(Calendar.HOUR_OF_DAY);
-        mMinute = calendar.get(Calendar.MINUTE);
 
         TimePickerDialog timePicker = new TimePickerDialog(
                 AlarmDetailActivity.this,

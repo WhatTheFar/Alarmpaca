@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -22,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground"
                 android:drawablePadding="16dp"
-                android:drawableStart="@drawable/clock"
+                android:drawableStart="@drawable/ic_clock_black_48dp"
                 android:fontFamily="sans-serif-thin"
                 android:paddingEnd="16dp"
                 android:paddingStart="16dp"
@@ -59,12 +58,6 @@
 
             </LinearLayout>
 
-            <!--<ImageView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="20dp"-->
-            <!--android:scaleType="centerCrop"-->
-            <!--android:src="@drawable/line_between" />-->
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -95,13 +88,6 @@
 
             </LinearLayout>
 
-            <!--<ImageView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="20dp"-->
-            <!--android:scaleType="centerCrop"-->
-            <!--android:src="@drawable/line_between" />-->
-
-
             <Switch
                 android:id="@+id/snoozeSwitch"
                 android:layout_width="match_parent"
@@ -115,14 +101,6 @@
                 android:textSize="25sp"
                 android:textStyle="normal" />
 
-
-            <!--<ImageView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="20dp"-->
-            <!--android:scaleType="centerCrop"-->
-            <!--android:src="@drawable/line_between" />-->
-
-
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
@@ -135,7 +113,7 @@
         android:layout_gravity="start"
         android:layout_marginBottom="16dp"
         app:floating_background_color="?attr/colorPrimary"
-        app:floating_icon="@drawable/close_circle"
+        app:floating_icon="@drawable/ic_close_circle_white_24dp"
         app:floating_title="CANCEL"
         app:floating_title_color="@color/white"
         app:layout_anchor="@+id/scrollView"
@@ -150,7 +128,7 @@
         android:layout_gravity="end"
         android:layout_marginBottom="16dp"
         app:floating_background_color="?attr/colorPrimary"
-        app:floating_icon="@drawable/checkbox_multiple_marked_outline"
+        app:floating_icon="@drawable/ic_checkbox_multiple_marked_white_24dp"
         app:floating_title="SAVE..."
         app:floating_title_color="@color/white"
         app:layout_anchor="@+id/scrollView"

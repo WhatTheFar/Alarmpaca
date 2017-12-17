@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.alpaca.alarmpaca.R;
 import com.alpaca.alarmpaca.fragment.AlarmFragment;
+import com.alpaca.alarmpaca.fragment.FragmentTemplateFull;
 import com.alpaca.alarmpaca.fragment.TaskFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -126,31 +127,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    public static class PlaceholderFragment extends Fragment {
-
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
-        }
-
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
-    }
-
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         SectionsPagerAdapter(FragmentManager fm) {
@@ -167,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 case 1:
                     return AlarmFragment.newInstance();
             }
-            return PlaceholderFragment.newInstance(position + 1);
+            return FragmentTemplateFull.newInstance();
         }
 
         @Override
@@ -185,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 2;
         }
     }
 }

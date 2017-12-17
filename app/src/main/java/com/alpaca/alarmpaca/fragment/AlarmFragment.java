@@ -1,6 +1,8 @@
 package com.alpaca.alarmpaca.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,24 +14,22 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.ahamed.multiviewadapter.BaseViewHolder;
 import com.ahamed.multiviewadapter.DataListManager;
-import com.ahamed.multiviewadapter.ItemViewHolder;
 import com.ahamed.multiviewadapter.SelectableAdapter;
-import com.ahamed.multiviewadapter.listener.MultiSelectionChangedListener;
 import com.ahamed.multiviewadapter.util.ItemDecorator;
 import com.ahamed.multiviewadapter.util.SimpleDividerDecoration;
 import com.alpaca.alarmpaca.R;
+import com.alpaca.alarmpaca.activity.AlarmDetailActivity;
 import com.alpaca.alarmpaca.activity.MainActivity;
-import com.alpaca.alarmpaca.adapter.AlarmAdapter;
 import com.alpaca.alarmpaca.adapter.AlarmBinder;
+import com.alpaca.alarmpaca.adapter.BlankBinder;
 import com.alpaca.alarmpaca.model.Alarm;
 import com.alpaca.alarmpaca.util.RealmUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
@@ -45,6 +45,8 @@ public class AlarmFragment extends Fragment {
     private RecyclerView recyclerView;
 
     private DataListManager<Alarm> selectableItemDataListManager;
+
+    public static final int REQUEST_ALARM_DETAIL = 1001;
 
     public AlarmFragment() {
         super();
@@ -113,7 +115,10 @@ public class AlarmFragment extends Fragment {
                 new AlarmBinder.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, Alarm item) {
-                        Log.wtf("AlarmFragment", "onitem click");
+                        Log.wtf("AlarmFragment", "onItem click");
+                        Intent intent = new Intent(getContext(), AlarmDetailActivity.class);
+                        intent.putExtra(AlarmDetailActivity.ALARM_ID_EXTRA, item.getId());
+                        startActivityForResult(intent, REQUEST_ALARM_DETAIL);
                     }
 
                     @Override
@@ -122,6 +127,11 @@ public class AlarmFragment extends Fragment {
                     }
                 }));
 
+        DataListManager<BlankBinder.BlankItem> blankItemDataListManager = new DataListManager<>(adapter);
+        adapter.addDataManager(blankItemDataListManager);
+        adapter.registerBinder(new BlankBinder());
+
+        blankItemDataListManager.set(BlankBinder.BlankItem.getOneBlankItemList());
 
         adapter.setSelectionMode(SelectableAdapter.SELECTION_MODE_MULTIPLE);
 
@@ -130,12 +140,31 @@ public class AlarmFragment extends Fragment {
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(adapter);
 
+        setDataToAdapter();
+
     }
 
     private void setDataToAdapter() {
+        selectableItemDataListManager.clear();
         Realm realm = RealmUtil.getRealmInstance();
         RealmResults<Alarm> results = realm.where(Alarm.class).findAllSorted("id");
         selectableItemDataListManager.set(results);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_ALARM_DETAIL:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    int id = data.getIntExtra(AlarmDetailActivity.ALARM_ID_EXTRA, -1);
+//                    Log.wtf("AlarmFragment", "onActivityResult : REQUEST_ALARM_DETAIL " + id);
+                    Realm realm = RealmUtil.getRealmInstance();
+                    realm.beginTransaction();
+                    realm.where(Alarm.class).equalTo("id", id).findFirst().deleteFromRealm();
+                    realm.commitTransaction();
+                }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -155,12 +184,6 @@ public class AlarmFragment extends Fragment {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.wtf("AlarmFragment", "onStart");
     }
 
     @Override
@@ -220,7 +243,7 @@ public class AlarmFragment extends Fragment {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             mode.setTitle("1 selected item");
-            mode.getMenuInflater().inflate(R.menu.menu_action_mode, menu);
+            mode.getMenuInflater().inflate(R.menu.menu_action_mode_alarm, menu);
             return true;
         }
 
@@ -229,8 +252,25 @@ public class AlarmFragment extends Fragment {
             return true;
         }
 
+        @SuppressLint("RestrictedApi")
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.action_delete:
+                    Log.wtf("AlarmActionMode", "Delete menu clicked");
+                    List<Alarm> selectedAlarm = selectableItemDataListManager.getSelectedItems();
+                    Realm realm = RealmUtil.getRealmInstance();
+                    realm.beginTransaction();
+                    for (Alarm alarm : selectedAlarm
+                            ) {
+                        alarm.deleteFromRealm();
+                    }
+                    realm.commitTransaction();
+                    realm.close();
+                    toggleActionMode();
+                    setDataToAdapter();
+                    break;
+            }
             return false;
         }
 
