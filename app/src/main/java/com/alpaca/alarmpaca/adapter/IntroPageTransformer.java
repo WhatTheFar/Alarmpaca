@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.alpaca.alarmpaca.R;
 
+
 public class IntroPageTransformer implements ViewPager.PageTransformer {
 
     @Override

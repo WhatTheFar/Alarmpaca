@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.alpaca.alarmpaca.R;
 
+
 public class IntroFragment extends Fragment {
 
     private static final String BACKGROUND_COLOR = "backgroundColor";

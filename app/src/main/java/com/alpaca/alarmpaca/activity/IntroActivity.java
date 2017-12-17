@@ -5,6 +5,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.alpaca.alarmpaca.R;
+import com.alpaca.alarmpaca.adapter.IntroAdapter;
+import com.alpaca.alarmpaca.adapter.IntroPageTransformer;
 
 
 public class IntroActivity extends AppCompatActivity {
