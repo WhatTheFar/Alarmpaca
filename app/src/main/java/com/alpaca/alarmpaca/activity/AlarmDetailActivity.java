@@ -20,14 +20,17 @@ import com.alpaca.alarmpaca.R;
 import com.alpaca.alarmpaca.model.Alarm;
 import com.alpaca.alarmpaca.util.AlarmMgrUtil;
 import com.alpaca.alarmpaca.util.RealmUtil;
+import com.touchboarder.weekdaysbuttons.WeekdaysDataItem;
+import com.touchboarder.weekdaysbuttons.WeekdaysDataSource;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import io.realm.Realm;
 import io.realm.RealmList;
 import ru.dimorinny.floatingtextbutton.FloatingTextButton;
 
-public class AlarmDetailActivity extends AppCompatActivity {
+public class AlarmDetailActivity extends AppCompatActivity implements WeekdaysDataSource.Callback {
 
     FloatingTextButton cancelBtn;
     FloatingTextButton saveBtn;
@@ -41,6 +44,9 @@ public class AlarmDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_alarm_detail);
 
         initInstances();
+
+        WeekdaysDataSource wds = new WeekdaysDataSource(this, R.id.weekdays_stub)
+                .start(this);
     }
 
     private void initInstances() {
@@ -142,4 +148,14 @@ public class AlarmDetailActivity extends AppCompatActivity {
         timePicker.show();
 
     };
+
+    @Override
+    public void onWeekdaysItemClicked(int i, WeekdaysDataItem weekdaysDataItem) {
+
+    }
+
+    @Override
+    public void onWeekdaysSelected(int i, ArrayList<WeekdaysDataItem> arrayList) {
+
+    }
 }

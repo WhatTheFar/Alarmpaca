@@ -97,10 +97,12 @@ public class MainActivity extends AppCompatActivity {
     final View.OnClickListener floatingActionBtnOnClickListener = view -> {
         switch (mViewPager.getCurrentItem()) {
             case 0:
+                Intent taskIntent = new Intent(MainActivity.this, TaskDetailActivity.class);
+                startActivity(taskIntent);
                 break;
             case 1:
-                Intent intent = new Intent(MainActivity.this, AlarmDetailActivity.class);
-                startActivity(intent);
+                Intent alarmIntent = new Intent(MainActivity.this, AlarmDetailActivity.class);
+                startActivity(alarmIntent);
                 break;
         }
     };
