@@ -37,7 +37,7 @@ import static android.graphics.Paint.ANTI_ALIAS_FLAG;
  */
 
 public class CircleCheckBox extends View {
-    private float innerCircleRadius = 30.f;
+    private float innerCircleRadius = 60.f;
     private float outerCircleRadius = innerCircleRadius / 2f;
     private float textSize = 35f;
     private float borderThickness = 5f;
