@@ -90,13 +90,6 @@ public class AlarmAlertActivity extends AppCompatActivity {
         textClock.startAnimation(fadeInAnim);
         shakingImageView.startAnimation(shakeAnim);
 
-
-        Handler handler = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-            }
-        };
     }
 
     protected final BroadcastReceiver alarmBroadcastReceiver = new BroadcastReceiver() {

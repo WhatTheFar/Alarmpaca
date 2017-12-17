@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.ahamed.multiviewadapter.BaseViewHolder;
 import com.ahamed.multiviewadapter.DataListManager;
+import com.ahamed.multiviewadapter.ItemViewHolder;
 import com.ahamed.multiviewadapter.SelectableAdapter;
 import com.ahamed.multiviewadapter.listener.MultiSelectionChangedListener;
 import com.ahamed.multiviewadapter.util.ItemDecorator;
@@ -108,10 +109,18 @@ public class AlarmFragment extends Fragment {
 
         adapter.addDataManager(selectableItemDataListManager);
         adapter.registerBinder(new AlarmBinder(itemDecorator,
-                (view, item) -> {
-                    toggleActionMode();
-                    return true;
+                new AlarmBinder.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, Alarm item) {
+                        Log.wtf("AlarmFragment", "onitem click");
+                    }
+
+                    @Override
+                    public void onItemLongClick(View view, Alarm item) {
+                        toggleActionMode();
+                    }
                 }));
+
 
         adapter.setSelectionMode(SelectableAdapter.SELECTION_MODE_MULTIPLE);
 
@@ -120,9 +129,11 @@ public class AlarmFragment extends Fragment {
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(adapter);
 
+    }
+
+    private void setDataToAdapter() {
         Realm realm = RealmUtil.getRealmInstance();
         RealmResults<Alarm> results = realm.where(Alarm.class).findAllSorted("id");
-
         selectableItemDataListManager.set(results);
     }
 
@@ -148,11 +159,20 @@ public class AlarmFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        Log.wtf("AlarmFragment", "onStart");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.wtf("AlarmFragment", "onResume");
+        setDataToAdapter();
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        Log.wtf("AlarmFragment", "onStop");
     }
 
     /*

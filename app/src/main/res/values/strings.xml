@@ -27,4 +27,5 @@
     <string name="sound">Sound</string>
     <string name="alpaca_sound">Alpaca Sound</string>
     <string name="snooze">Snooze</string>
+    <string name="login">Login</string>
 </resources>

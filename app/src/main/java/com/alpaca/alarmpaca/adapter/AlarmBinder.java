@@ -1,6 +1,5 @@
 package com.alpaca.alarmpaca.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,8 +16,6 @@ import com.ahamed.multiviewadapter.ItemBinder;
 import com.ahamed.multiviewadapter.util.ItemDecorator;
 import com.alpaca.alarmpaca.R;
 import com.alpaca.alarmpaca.model.Alarm;
-import com.alpaca.alarmpaca.util.AlarmMgrUtil;
-import com.alpaca.alarmpaca.util.Contextor;
 import com.alpaca.alarmpaca.util.RealmUtil;
 
 import io.realm.Realm;
@@ -26,10 +23,10 @@ import io.realm.Realm;
 
 public class AlarmBinder extends ItemBinder<Alarm, AlarmBinder.ViewHolder> {
 
-    private BaseViewHolder.OnItemLongClickListener<Alarm> listener;
+    private OnItemClickListener listener;
 
     public AlarmBinder(ItemDecorator itemDecorator,
-                       BaseViewHolder.OnItemLongClickListener<Alarm> listener) {
+                       OnItemClickListener listener) {
         super(itemDecorator);
         this.listener = listener;
     }
@@ -56,6 +53,11 @@ public class AlarmBinder extends ItemBinder<Alarm, AlarmBinder.ViewHolder> {
         return maxSpanCount;
     }
 
+    public interface OnItemClickListener {
+        void onItemClick(View view, Alarm item);
+        void onItemLongClick(View view, Alarm item);
+    }
+
     static class ViewHolder extends BaseViewHolder<Alarm> {
 
         private TextView timeTv;
@@ -64,14 +66,11 @@ public class AlarmBinder extends ItemBinder<Alarm, AlarmBinder.ViewHolder> {
         private SwitchCompat toggleBtn;
         private ImageView ivIndicator;
 
-        //        private Context context;
         private int alarmId;
 
         ViewHolder(View itemView,
-                   final BaseViewHolder.OnItemLongClickListener<Alarm> listener) {
+                   final AlarmBinder.OnItemClickListener listener) {
             super(itemView);
-
-//            this.context = itemView.getContext();
 
             timeTv = itemView.findViewById(R.id.timeTv);
             periodTv = itemView.findViewById(R.id.periodTv);
@@ -90,12 +89,13 @@ public class AlarmBinder extends ItemBinder<Alarm, AlarmBinder.ViewHolder> {
             setItemClickListener((view, item) -> {
                 if (isInActionMode()) {
                     toggleItemSelection();
+                } else {
+                    listener.onItemClick(view, item);
                 }
             });
 
             toggleBtn.setOnCheckedChangeListener((compoundButton, isChecked) -> {
                 Realm realm = RealmUtil.getRealmInstance();
-
 
                 if (alarmId != 0) {
                     realm.executeTransactionAsync(realm1 -> {

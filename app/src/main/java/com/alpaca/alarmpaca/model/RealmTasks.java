@@ -4,6 +4,8 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.tasks.model.TaskList;
 import com.google.api.services.tasks.model.TaskLists;
 
+import java.util.Date;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -18,10 +20,14 @@ public class RealmTasks extends RealmObject {
     private String selfLink;
     private String notes;
     private String status;
-    private DateTime due;
+    private Date due;
     private boolean deleted;
 
-    public RealmTasks(String id, String title, String notes, String status, DateTime due, boolean deleted) {
+    public RealmTasks() {
+
+    }
+
+    public RealmTasks(String id, String title, String notes, String status, Date due, boolean deleted) {
         this.id = id;
         this.title = title;
         this.notes = notes;
@@ -70,11 +76,11 @@ public class RealmTasks extends RealmObject {
         this.status = status;
     }
 
-    public DateTime getDue() {
+    public Date getDue() {
         return due;
     }
 
-    public void setDue(DateTime due) {
+    public void setDue(Date due) {
         this.due = due;
     }
 

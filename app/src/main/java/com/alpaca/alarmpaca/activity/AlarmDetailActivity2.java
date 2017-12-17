@@ -86,6 +86,13 @@ public class AlarmDetailActivity2 extends AppCompatActivity {
         cancelBtn.setOnClickListener(cancelBtnClickListener);
         saveBtn.setOnClickListener(saveBtnClickListener);
 
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.setOnClickListener(this);
+            }
+        });
+
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.alpaca.alarmpaca.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,10 +36,16 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecovera
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.services.tasks.TasksScopes;
 import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.Tasks;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
@@ -53,8 +61,17 @@ public class TaskFragment extends Fragment {
 
     private RecyclerView recyclerView;
 
+    private GoogleAccountCredential mCredential;
+    private String accountName;
+    private TaskManager taskManager;
+
     static final int REQUEST_AUTHORIZATION = 1001;
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
+
+    private static final String SHARED_PREF_ACCOUNT = "accountSharedPreference";
+    private static final String PREF_ACCOUNT_NAME = "accountName";
+    private static final String ARGS_ACCOUNT_NAME = "args_accountName";
+    private static final String[] SCOPES = {TasksScopes.TASKS};
 
 
     public TaskFragment() {
@@ -65,6 +82,7 @@ public class TaskFragment extends Fragment {
     public static TaskFragment newInstance() {
         TaskFragment fragment = new TaskFragment();
         Bundle args = new Bundle();
+//        args.putString(ARGS_ACCOUNT_NAME, accountName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -88,6 +106,22 @@ public class TaskFragment extends Fragment {
 
     private void init(Bundle savedInstanceState) {
         // Init Fragment level's variable(s) here
+//        accountName = getArguments().getString(ARGS_ACCOUNT_NAME);
+        accountName = getActivity()
+                .getSharedPreferences(SHARED_PREF_ACCOUNT, Context.MODE_PRIVATE)
+                .getString(PREF_ACCOUNT_NAME, null);
+
+        mCredential = GoogleAccountCredential.usingOAuth2(
+                getContext(), Arrays.asList(SCOPES))
+                .setBackOff(new ExponentialBackOff());
+
+        if (accountName != null) {
+            mCredential.setSelectedAccountName(accountName);
+            taskManager = new TaskManager(mCredential);
+            taskManager.saveDataToRealm();
+
+        }
+
     }
 
     @SuppressWarnings("UnusedParameters")
@@ -116,11 +150,11 @@ public class TaskFragment extends Fragment {
                 });
 
         adapter.addDataManager(selectableItemDataListManager);
-        adapter.registerBinder(new AlarmBinder(itemDecorator,
-                (view, item) -> {
-                    toggleActionMode();
-                    return true;
-                }));
+//        adapter.registerBinder(new AlarmBinder(itemDecorator,
+//                (view, item) -> {
+//                    toggleActionMode();
+//                    return true;
+//                }));
 
         adapter.setSelectionMode(SelectableAdapter.SELECTION_MODE_MULTIPLE);
 
@@ -138,6 +172,12 @@ public class TaskFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.wtf("TaskFragment", "onResume");
     }
 
     @Override
@@ -249,13 +289,20 @@ public class TaskFragment extends Fragment {
                 if (params.length != 0) {
                     switch (params[0]) {
                         case ACTION_SAVE_DATA:
+                            Log.wtf("TaskManager", "doInBackground : ACTION_SAVE_DATA");
                             Tasks result = mService.tasks().list("@default").execute();
                             List<Task> tasks = result.getItems();
+
+                            Log.wtf("sdasda", "Sdsadsasd");
+                            Realm realm = RealmUtil.getRealmInstance();
 
                             //TODO save to realm
                             for (Task task : tasks
                                     ) {
-
+//                                long time = task.getDue().getValue();
+//                                Date date = new Date(time);
+//                                Log.wtf("TaskManager", DateFormat.getDateInstance().format(date));
+                                Log.wtf("TaskManager", task.getTitle());
                             }
 
 
@@ -269,11 +316,14 @@ public class TaskFragment extends Fragment {
             }
         }
 
-        public void saveDataToRealm() {
-            execute(ACTION_SAVE_DATA);
+        void saveDataToRealm() {
+            Log.wtf("TaskManager", "saveDataToRealm");
+            if (taskManager.getStatus() != Status.RUNNING) {
+                execute(ACTION_SAVE_DATA);
+            }
         }
 
-        public void deleteDataFromApi() {
+        void deleteDataFromApi() {
             execute(ACTION_DELETE_DATA);
         }
 
