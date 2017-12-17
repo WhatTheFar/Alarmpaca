@@ -83,6 +83,7 @@ public class AlarmFragment extends Fragment {
     private void initInstances(View rootView, Bundle savedInstanceState) {
         // Init 'View' instance(s) with rootView.findViewById here
 
+        Log.wtf("AlarmFragment", "initInstances");
         recyclerView = rootView.findViewById(R.id.recyclerView);
 
         setUpAdapter();

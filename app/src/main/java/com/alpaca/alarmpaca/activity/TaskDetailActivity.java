@@ -74,7 +74,6 @@ public class TaskDetailActivity extends AppCompatActivity {
 
         dialog = dialogBuilder.build();
 
-
         dueDateTv.setOnClickListener(onDueDateClickListener);
 
 

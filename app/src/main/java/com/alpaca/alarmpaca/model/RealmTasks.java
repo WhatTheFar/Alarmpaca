@@ -21,11 +21,14 @@ public class RealmTasks extends RealmObject {
     private String notes;
     private String status;
     private Date due;
+    private String position;
     private boolean deleted;
 
     public RealmTasks() {
 
     }
+
+
 
     public RealmTasks(String id, String title, String notes, String status, Date due, boolean deleted) {
         this.id = id;
@@ -82,6 +85,14 @@ public class RealmTasks extends RealmObject {
 
     public void setDue(Date due) {
         this.due = due;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
     }
 
     public boolean isDeleted() {

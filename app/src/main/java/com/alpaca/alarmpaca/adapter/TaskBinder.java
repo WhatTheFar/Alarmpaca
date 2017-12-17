@@ -20,15 +20,18 @@ import com.alpaca.alarmpaca.model.RealmTasks;
 import com.alpaca.alarmpaca.util.RealmUtil;
 import com.alpaca.alarmpaca.view.CircleCheckBox;
 
+import java.text.DateFormat;
+import java.util.Objects;
+
 import io.realm.Realm;
 
 
-public class TaskBinder extends ItemBinder <RealmTasks, TaskBinder.ViewHolder> {
+public class TaskBinder extends ItemBinder<RealmTasks, TaskBinder.ViewHolder> {
 
-    private BaseViewHolder.OnItemLongClickListener<RealmTasks> listener;
+    private OnItemClickListener listener;
 
     public TaskBinder(ItemDecorator itemDecorator,
-                      BaseViewHolder.OnItemLongClickListener<RealmTasks> listener) {
+                      OnItemClickListener listener) {
         super(itemDecorator);
         this.listener = listener;
     }
@@ -46,11 +49,19 @@ public class TaskBinder extends ItemBinder <RealmTasks, TaskBinder.ViewHolder> {
     }
 
     @Override
-    public boolean canBindData(Object item) { return item instanceof RealmTasks; }
+    public boolean canBindData(Object item) {
+        return item instanceof RealmTasks;
+    }
 
     @Override
     public int getSpanSize(int maxSpanCount) {
         return maxSpanCount;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, RealmTasks item);
+        void onItemLongClick(View view, RealmTasks item);
+        void onItemCheckedChange(View view, RealmTasks item, boolean isChecked);
     }
 
     static class ViewHolder extends BaseViewHolder<RealmTasks> {
@@ -59,10 +70,10 @@ public class TaskBinder extends ItemBinder <RealmTasks, TaskBinder.ViewHolder> {
         private TextView detailTv;
         private TextView dueDateTv;
         private CircleCheckBox checkBox;
-        private String id;
+//        private String id;
 
         ViewHolder(View itemView,
-                   final OnItemLongClickListener<RealmTasks> listener) {
+                   final TaskBinder.OnItemClickListener listener) {
             super(itemView);
 
             titleTv = itemView.findViewById(R.id.taskTitle);
@@ -73,9 +84,11 @@ public class TaskBinder extends ItemBinder <RealmTasks, TaskBinder.ViewHolder> {
             //ivIndicator = itemView.findViewById(R.id.iv_selection_indicator);
 
             setItemLongClickListener((view, item) -> {
-                toggleItemSelection();
+                 toggleItemSelection();
                 if (!isInActionMode()) {
                     listener.onItemLongClick(view, item);
+                } else {
+                    listener.onItemClick(view, item);
                 }
                 return true;
             });
@@ -87,43 +100,42 @@ public class TaskBinder extends ItemBinder <RealmTasks, TaskBinder.ViewHolder> {
             });
 
             checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-                Realm realm = RealmUtil.getRealmInstance();
 
+                listener.onItemCheckedChange(compoundButton, getItem(), isChecked);
 
-                if (Integer.parseInt(id) != 0  && isChecked == true) {
-                    realm.executeTransactionAsync(realm1 -> {
-                        RealmTasks task = realm1.where(RealmTasks.class).equalTo("id", id).findFirst();
-                        task.setStatus("completed");
-                        Log.wtf("Realm", "Update Success id : " + task.getId() + ", isActivated : " + isChecked);
-                    });
-                }else {
-                    realm.executeTransaction(realm1 -> {
-                        RealmTasks task = realm1.where(RealmTasks.class).equalTo("id" , id).findFirst();
-                        task.setStatus("needsAction");
-                        Log.wtf("Realm" ,"Update Success id : " + task.getId() + ", isActivated : " + isChecked);
-                    });
+//                Realm realm = RealmUtil.getRealmInstance();
 
-//                    if (isChecked) {
-//                        AlarmMgrUtil.setAlarm(Contextor.getContextInstance(), alarmId);
-//                    } else {
-//                        AlarmMgrUtil.cancelAlarm(Contextor.getContextInstance(), alarmId);
-//                    }
-                }
+//                if (id != null && isChecked) {
+//                    realm.executeTransactionAsync(realm1 -> {
+//                        RealmTasks task = realm1.where(RealmTasks.class).equalTo("id", id).findFirst();
+//                        task.setStatus("completed");
+//                        Log.wtf("Realm", "Update Success id : " + task.getId() + ", status : " + task.getStatus());
+//                    });
+//                } else {
+//                    realm.executeTransaction(realm1 -> {
+//                        RealmTasks task = realm1.where(RealmTasks.class).equalTo("id", id).findFirst();
+//                        task.setStatus("needsAction");
+//                        Log.wtf("Realm", "Update Success id : " + task.getId() + ", status : " + task.getStatus());
+//                    });
+//                }
 
-                realm.close();
+//                realm.close();
 
             });
         }
 
         private void bind(RealmTasks item) {
 
-            this.id = item.getId();
+//            this.id = item.getId();
 
             titleTv.setText(item.getTitle());
-            detailTv.setText(item.getNotes());
-            dueDateTv.setText(item.getDue().toString());
+            detailTv.setText(item.getNotes() == null ? "" : item.getNotes());
+            dueDateTv.setText(item.getDue() == null ? "" : DateFormat.getDateInstance().format(item.getDue()));
 
-
+            Log.wtf("TaskBinder", "item : " + item.getTitle() + " " + item.getStatus());
+            if (Objects.equals(item.getStatus(), "completed")) {
+                checkBox.setChecked(true);
+            }
 
         }
     }

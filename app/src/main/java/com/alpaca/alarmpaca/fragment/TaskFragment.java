@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +23,11 @@ import com.ahamed.multiviewadapter.SelectableAdapter;
 import com.ahamed.multiviewadapter.util.ItemDecorator;
 import com.ahamed.multiviewadapter.util.SimpleDividerDecoration;
 import com.alpaca.alarmpaca.R;
+import com.alpaca.alarmpaca.activity.LoginActivity;
 import com.alpaca.alarmpaca.activity.MainActivity;
 import com.alpaca.alarmpaca.activity.TaskActivity;
 import com.alpaca.alarmpaca.adapter.AlarmBinder;
+import com.alpaca.alarmpaca.adapter.TaskBinder;
 import com.alpaca.alarmpaca.model.Alarm;
 import com.alpaca.alarmpaca.model.RealmTasks;
 import com.alpaca.alarmpaca.util.RealmUtil;
@@ -47,9 +50,11 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 
 @SuppressWarnings("unused")
@@ -62,7 +67,6 @@ public class TaskFragment extends Fragment {
     private RecyclerView recyclerView;
 
     private GoogleAccountCredential mCredential;
-    private String accountName;
     private TaskManager taskManager;
 
     static final int REQUEST_AUTHORIZATION = 1001;
@@ -107,7 +111,7 @@ public class TaskFragment extends Fragment {
     private void init(Bundle savedInstanceState) {
         // Init Fragment level's variable(s) here
 //        accountName = getArguments().getString(ARGS_ACCOUNT_NAME);
-        accountName = getActivity()
+        String accountName = getActivity()
                 .getSharedPreferences(SHARED_PREF_ACCOUNT, Context.MODE_PRIVATE)
                 .getString(PREF_ACCOUNT_NAME, null);
 
@@ -121,7 +125,6 @@ public class TaskFragment extends Fragment {
             taskManager.saveDataToRealm();
 
         }
-
     }
 
     @SuppressWarnings("UnusedParameters")
@@ -131,6 +134,7 @@ public class TaskFragment extends Fragment {
 
         setUpAdapter();
 
+        setHasOptionsMenu(true);
     }
 
     @SuppressLint("RestrictedApi")
@@ -150,11 +154,41 @@ public class TaskFragment extends Fragment {
                 });
 
         adapter.addDataManager(selectableItemDataListManager);
-//        adapter.registerBinder(new AlarmBinder(itemDecorator,
+//        adapter.registerBinder(new TaskBinder(itemDecorator,
 //                (view, item) -> {
 //                    toggleActionMode();
 //                    return true;
 //                }));
+
+        adapter.registerBinder(new TaskBinder(itemDecorator,
+                new TaskBinder.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, RealmTasks item) {
+
+                    }
+
+                    @Override
+                    public void onItemLongClick(View view, RealmTasks item) {
+                        toggleActionMode();
+                    }
+
+                    @Override
+                    public void onItemCheckedChange(View view, RealmTasks item, boolean isChecked) {
+                        String status = isChecked ? "completed" : "needsAction";
+                        if (!Objects.equals(item.getStatus(), status)) {
+                            Realm realm = RealmUtil.getRealmInstance();
+                            realm.executeTransaction(realm1 -> {
+                                RealmTasks task = realm1.where(RealmTasks.class).equalTo("id", item.getId()).findFirst();
+                                task.setStatus(status);
+                                Log.wtf("Realm", "Update Success id : " + task.getId() + ", status : " + task.getStatus());
+                            });
+                            realm.close();
+
+                            TaskManager taskManager = new TaskManager(mCredential);
+                            taskManager.updateDataToApi(item.getId());
+                        }
+                    }
+                }));
 
         adapter.setSelectionMode(SelectableAdapter.SELECTION_MODE_MULTIPLE);
 
@@ -163,10 +197,33 @@ public class TaskFragment extends Fragment {
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(adapter);
 
-        Realm realm = RealmUtil.getRealmInstance();
-        RealmResults<RealmTasks> results = realm.where(RealmTasks.class).findAllSorted("id");
+        setDataToAdapter();
+    }
 
+    private void setDataToAdapter() {
+        Log.wtf("TaskFragment", "setDataToAdapter");
+        Realm realm = RealmUtil.getRealmInstance();
+        RealmResults<RealmTasks> results = realm.where(RealmTasks.class).findAllSorted("position");
         selectableItemDataListManager.set(results);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.menu_fragment_task, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_task_clear:
+                Log.wtf("TaskFragment", "Menu : Clear Task clicked");
+                TaskManager taskManager = new TaskManager(mCredential);
+                taskManager.clearCompleteTaskFromDataAndApi();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -178,6 +235,7 @@ public class TaskFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.wtf("TaskFragment", "onResume");
+//        setDataToAdapter();
     }
 
     @Override
@@ -264,15 +322,16 @@ public class TaskFragment extends Fragment {
 
 
     @SuppressLint("StaticFieldLeak")
-    private class TaskManager extends AsyncTask<Integer, Void, Void> {
+    private class TaskManager extends AsyncTask<String, Void, String> {
 
         private com.google.api.services.tasks.Tasks mService = null;
         private Exception mLastError = null;
-        private String action;
 
-        private static final int ACTION_SAVE_DATA = 1001;
-        private static final int ACTION_DELETE_DATA = 1002;
-
+        private static final String ACTION_SAVE_DATA = "action_save_data";
+        private static final String ACTION_DELETE_DATA = "action_delete_data";
+        private static final String ACTION_UPDATE_DATA = "action_update_data";
+        private static final String ACTION_INSERT_DATA = "action_insert_data";
+        private static final String ACTION_CLEAR_DATA = "action_clear_data";
 
         TaskManager(GoogleAccountCredential credential) {
             HttpTransport transport = AndroidHttp.newCompatibleTransport();
@@ -284,29 +343,121 @@ public class TaskFragment extends Fragment {
         }
 
         @Override
-        protected Void doInBackground(Integer... params) {
+        protected String doInBackground(String... params) {
             try {
                 if (params.length != 0) {
+                    Realm realm = RealmUtil.getRealmInstance();
+                    String id;
+                    RealmTasks realmTask;
                     switch (params[0]) {
                         case ACTION_SAVE_DATA:
                             Log.wtf("TaskManager", "doInBackground : ACTION_SAVE_DATA");
+
+                            //Loading Tasks From Google Api
                             Tasks result = mService.tasks().list("@default").execute();
                             List<Task> tasks = result.getItems();
 
-                            Log.wtf("sdasda", "Sdsadsasd");
-                            Realm realm = RealmUtil.getRealmInstance();
+                            for (Task task : tasks) {
 
-                            //TODO save to realm
-                            for (Task task : tasks
-                                    ) {
-//                                long time = task.getDue().getValue();
-//                                Date date = new Date(time);
-//                                Log.wtf("TaskManager", DateFormat.getDateInstance().format(date));
-                                Log.wtf("TaskManager", task.getTitle());
+                                RealmTasks realmTasks = new RealmTasks();
+                                realmTasks.setId(task.getId());
+                                realmTasks.setTitle(task.getTitle());
+                                realmTasks.setNotes(task.getNotes() == null ? "" : task.getNotes());
+                                realmTasks.setStatus(task.getStatus());
+                                realmTasks.setPosition(task.getPosition());
+
+                                Log.d("TaskManager", "Title : " + task.getTitle());
+
+                                if (task.getDue() != null) {
+                                    Date due = new Date(task.getDue().getValue());
+                                    realmTasks.setDue(due);
+                                    Log.d("TaskManager", "Date : " + DateFormat.getDateInstance().format(due));
+                                }
+
+                                realm.executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(realmTasks));
                             }
+                            realm.close();
+                            return ACTION_SAVE_DATA;
 
+                        case ACTION_DELETE_DATA:
+                            id = params[1];
+                            mService.tasks().delete("@default", id).execute();
+                            realm.close();
+                            return ACTION_DELETE_DATA;
 
+                        case ACTION_UPDATE_DATA:
+                            Log.wtf("TaskManager", "doInBackground : ACTION_UPDATE_DATA");
+                            id = params[1];
+                            // First retrieve the task to update.
+                            Task taskToUpdate = mService.tasks().get("@default", id).execute();
+
+                            realmTask = realm.where(RealmTasks.class)
+                                    .equalTo("id", id)
+                                    .findFirst();
+
+//                            taskToUpdate.setId(realmTask.getId());
+//                            taskToUpdate.setTitle(realmTask.getTitle());
+//                            if (realmTask.getNotes() != null) {
+//                                taskToUpdate.setNotes(realmTask.getNotes());
+//                            }
+//                            taskToUpdate.setTitle("hello");
+                            if (Objects.equals(realmTask.getStatus(), "needsAction")) {
+                                taskToUpdate.setCompleted(null);
+                                taskToUpdate.setStatus("needsAction");
+                            } else {
+                                taskToUpdate.setStatus("completed");
+                            }
+                            Log.wtf("TaskManager", "doInBackground : " + taskToUpdate.getId());
+                            Log.wtf("TaskManager", "doInBackground : " + id);
+                            Log.wtf("TaskManager", "doInBackground : " + taskToUpdate.toPrettyString());
+
+                            Task updatedTask = mService.tasks().update("@default", taskToUpdate.getId(), taskToUpdate).execute();
+                            realm.close();
+                            Log.wtf("TaskManager", "doInBackground : " + updatedTask.toPrettyString());
+                            return ACTION_UPDATE_DATA;
+
+                        case ACTION_INSERT_DATA:
+                            id = params[1];
+                            // Retrieve data to insert.
+                            realmTask = realm.where(RealmTasks.class)
+                                    .equalTo("id", id)
+                                    .findFirst();
+                            // Insert data to temporary task
+                            Task taskToInsert = new Task();
+                            taskToInsert.setTitle(realmTask.getTitle());
+                            if (realmTask.getNotes() != null) {
+                                taskToInsert.setNotes(realmTask.getNotes());
+                            }
+                            taskToInsert.setStatus(realmTask.getStatus());
+                            taskToInsert.setDeleted(realmTask.isDeleted());
+
+                            realm.beginTransaction();
+                            realmTask.deleteFromRealm();
+                            realm.commitTransaction();
+
+                            mService.tasks().insert("@default", taskToInsert).execute();
+                            realm.close();
+                            return ACTION_INSERT_DATA;
+
+                        case ACTION_CLEAR_DATA:
+                            //Clear from Task Api
+                            mService.tasks().clear("@default").execute();
+
+                            //Clear from Realm
+                            RealmResults<RealmTasks> realmResults = realm.where(RealmTasks.class)
+                                    .equalTo("status", "completed")
+                                    .findAll();
+
+                            realm.beginTransaction();
+                            realmResults.deleteAllFromRealm();
+                            realm.commitTransaction();
+                            realm.close();
+                            return ACTION_CLEAR_DATA;
+
+                        default:
+                            break;
                     }
+                    realm.close();
                 }
                 return null;
             } catch (Exception e) {
@@ -323,8 +474,16 @@ public class TaskFragment extends Fragment {
             }
         }
 
-        void deleteDataFromApi() {
-            execute(ACTION_DELETE_DATA);
+        void deleteDataFromApi(String id) {
+            execute(ACTION_DELETE_DATA, id);
+        }
+
+        void updateDataToApi(String id) {
+            execute(ACTION_UPDATE_DATA, id);
+        }
+
+        void clearCompleteTaskFromDataAndApi() {
+            execute(ACTION_CLEAR_DATA);
         }
 
         @Override
@@ -333,8 +492,17 @@ public class TaskFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (s != null) {
+                switch (s) {
+                    case ACTION_SAVE_DATA:
+                        setDataToAdapter();
+                        break;
+                    case ACTION_UPDATE_DATA:
+                        Log.wtf("TaskManager", "onPostExecute : ACTION_UPDATE_DATA");
+                }
+            }
         }
 
         @Override

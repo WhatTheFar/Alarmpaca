@@ -28,4 +28,6 @@
     <string name="alpaca_sound">Alpaca Sound</string>
     <string name="snooze">Snooze</string>
     <string name="login">Login</string>
+    <string name="clear">Clear</string>
+    <string name="clear_task">Clear Task</string>
 </resources>
