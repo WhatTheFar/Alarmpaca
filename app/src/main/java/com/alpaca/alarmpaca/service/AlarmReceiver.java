@@ -1,4 +1,4 @@
-package com.alpaca.alarmpaca;
+package com.alpaca.alarmpaca.service;
 
 
 import android.content.BroadcastReceiver;
@@ -16,7 +16,6 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, Intent intent) {
         //perform your task
-//        Toast.makeText(context, "Alarm alert", Toast.LENGTH_SHORT).show();
         int alarmId = intent.getExtras().getInt("id");
 
         Realm realm = RealmUtil.getRealmInstance();

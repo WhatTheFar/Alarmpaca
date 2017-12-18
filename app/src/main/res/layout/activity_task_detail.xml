@@ -35,8 +35,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:drawablePadding="16dp"
                 android:drawableStart="@drawable/ic_note_text_black_24dp"
@@ -48,9 +48,9 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="3dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginTop="3dp"
                 android:background="@color/colorBetweenLine" />
 
 
@@ -65,9 +65,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:drawablePadding="16dp"
                 android:drawableStart="@drawable/ic_clock_black_24dp"
                 android:fontFamily="sans-serif-medium"
@@ -77,18 +77,18 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="3dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginTop="3dp"
                 android:background="@color/colorBetweenLine" />
 
             <TextView
                 android:id="@+id/due_date_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:layout_marginTop="10dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:hint="@string/select_date"
                 android:textSize="20sp" />
@@ -102,8 +102,8 @@
                     android:layout_height="50dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="40dp"
-                    android:src="@drawable/ic_alpaca"
-                    android:contentDescription="@string/alpaca_icon" />
+                    android:contentDescription="@string/alpaca_icon"
+                    android:src="@drawable/ic_alpaca" />
 
             </FrameLayout>
 
@@ -112,7 +112,7 @@
     </android.support.v4.widget.NestedScrollView>
 
     <ru.dimorinny.floatingtextbutton.FloatingTextButton
-        android:id="@+id/cancelTaskBtn"
+        android:id="@+id/cancelBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
@@ -127,7 +127,7 @@
     </ru.dimorinny.floatingtextbutton.FloatingTextButton>
 
     <ru.dimorinny.floatingtextbutton.FloatingTextButton
-        android:id="@+id/saveTaskBtn"
+        android:id="@+id/saveBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"

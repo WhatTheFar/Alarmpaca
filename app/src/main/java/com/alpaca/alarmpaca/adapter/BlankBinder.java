@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 
 import com.ahamed.multiviewadapter.BaseViewHolder;
 import com.ahamed.multiviewadapter.ItemBinder;
-import com.ahamed.multiviewadapter.util.ItemDecorator;
 import com.alpaca.alarmpaca.R;
 
 import java.util.ArrayList;
@@ -34,6 +33,7 @@ public class BlankBinder extends ItemBinder<BlankBinder.BlankItem, BlankBinder.V
         return maxSpanCount;
     }
 
+    @SuppressWarnings("deprecation")
     static class ViewHolder extends BaseViewHolder<BlankItem> {
 
         ViewHolder(View itemView) {

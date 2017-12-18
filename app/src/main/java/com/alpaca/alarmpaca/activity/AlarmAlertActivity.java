@@ -5,9 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -20,14 +17,14 @@ import android.widget.ImageView;
 import android.widget.TextClock;
 import android.widget.TextView;
 
-import com.alpaca.alarmpaca.AlarmService;
+import com.alpaca.alarmpaca.service.AlarmService;
 import com.alpaca.alarmpaca.R;
 import com.tomerrosenfeld.customanalogclockview.CustomAnalogClock;
 
 import java.text.DateFormat;
 import java.util.Date;
 
-import static com.alpaca.alarmpaca.AlarmService.BROADCAST_ALARM_SERVICE_END;
+import static com.alpaca.alarmpaca.service.AlarmService.BROADCAST_ALARM_SERVICE_END;
 
 
 public class AlarmAlertActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package com.alpaca.alarmpaca;
+package com.alpaca.alarmpaca.service;
 
 import android.app.Service;
 import android.content.Context;

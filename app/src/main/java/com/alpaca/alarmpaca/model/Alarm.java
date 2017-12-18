@@ -69,7 +69,7 @@ public class Alarm extends RealmObject {
         if (System.currentTimeMillis() >= calendar.getTimeInMillis()) {
             calendar.setTimeInMillis(calendar.getTimeInMillis() + AlarmManager.INTERVAL_DAY);
             return DateFormat.getDateInstance()
-                    .format(getCalendarInstance().getTime());
+                    .format(calendar.getTime());
         } else {
             return "Today";
         }

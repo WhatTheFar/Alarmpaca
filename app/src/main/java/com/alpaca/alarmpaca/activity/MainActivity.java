@@ -14,12 +14,9 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.alpaca.alarmpaca.R;
 import com.alpaca.alarmpaca.fragment.AlarmFragment;
@@ -30,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
 
     ViewPager mViewPager;
     ActionMode actionMode;
+
+    public static final int REQUEST_TASK_DETAIL = 1101;
+    public static final int REQUEST_ALARM_DETAIL = 1102;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +62,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        String tag = null;
+        switch (requestCode) {
+            case REQUEST_TASK_DETAIL:
+                Log.wtf("MainActivity", "onActivityResult : REQUEST_TASK_DETAIL");
+                tag = "android:switcher:" + mViewPager.getId() + ":0";
+                break;
+            case REQUEST_ALARM_DETAIL:
+                Log.wtf("MainActivity", "onActivityResult : REQUEST_ALARM_DETAIL");
+                tag = "android:switcher:" + mViewPager.getId() + ":1";
+                break;
+        }
+        if (tag != null) {
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+            fragment.onActivityResult(requestCode, resultCode, data);
+
+        }
+    }
+
+    @Override
     public void onSupportActionModeStarted(@NonNull ActionMode mode) {
         Log.wtf("MainActivity", "ActionMode : onSupportActionModeStarted");
         this.actionMode = mode;
@@ -85,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_settings:
                 return true;
             case R.id.action_delete:
-                Log.wtf("MainActivity", "Menu : Delete clicked");
                 return true;
         }
 
@@ -96,11 +116,11 @@ public class MainActivity extends AppCompatActivity {
         switch (mViewPager.getCurrentItem()) {
             case 0:
                 Intent taskIntent = new Intent(MainActivity.this, TaskDetailActivity.class);
-                startActivity(taskIntent);
+                startActivityForResult(taskIntent, REQUEST_TASK_DETAIL);
                 break;
             case 1:
                 Intent alarmIntent = new Intent(MainActivity.this, AlarmDetailActivity.class);
-                startActivity(alarmIntent);
+                startActivityForResult(alarmIntent, REQUEST_ALARM_DETAIL);
                 break;
         }
     };
@@ -108,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
     ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//            Log.wtf("MainActivity", "ViewPager : onPageScrolled");
             if (actionMode != null) {
                 Log.wtf("MainActivity", "ActionMode : finish");
                 actionMode.finish();
@@ -123,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onPageScrollStateChanged(int state) {
-//            Log.wtf("MainActivity", "ViewPager : onPageScrollStateChanged " + state);
         }
     };
 
@@ -160,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
+            // Show 2 total pages.
             return 2;
         }
     }

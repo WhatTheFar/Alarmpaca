@@ -9,12 +9,10 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
-import com.alpaca.alarmpaca.AlarmReceiver;
+import com.alpaca.alarmpaca.service.AlarmReceiver;
 import com.alpaca.alarmpaca.model.Alarm;
 
 import java.util.Calendar;
-
-import io.realm.Realm;
 
 public class AlarmMgrUtil {
 

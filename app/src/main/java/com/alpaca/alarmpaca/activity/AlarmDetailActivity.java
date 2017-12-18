@@ -1,22 +1,14 @@
 package com.alpaca.alarmpaca.activity;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
-import com.alpaca.alarmpaca.AlarmReceiver;
 import com.alpaca.alarmpaca.R;
 import com.alpaca.alarmpaca.model.Alarm;
 import com.alpaca.alarmpaca.util.AlarmMgrUtil;
@@ -37,8 +29,8 @@ public class AlarmDetailActivity extends AppCompatActivity implements WeekdaysDa
     FloatingTextButton saveBtn;
     TextView clockTv;
 
-    int mHour, mMinute;
-    Alarm intentAlarm;
+    private int mHour, mMinute;
+    private Alarm intentAlarm;
 
     public static final String ALARM_ID_EXTRA = "alarm_id_extra";
 
@@ -49,8 +41,8 @@ public class AlarmDetailActivity extends AppCompatActivity implements WeekdaysDa
 
         initInstances();
 
-        WeekdaysDataSource wds = new WeekdaysDataSource(this, R.id.weekdays_stub)
-                .start(this);
+        WeekdaysDataSource wds = new WeekdaysDataSource(this, R.id.weekdays_stub);
+        wds.start(this);
     }
 
     private void initInstances() {
@@ -88,7 +80,6 @@ public class AlarmDetailActivity extends AppCompatActivity implements WeekdaysDa
         switch (item.getItemId()) {
             case android.R.id.home: {
                 finish();
-                Log.wtf("AlarmDetailActivity", "Home/Up btn clicked");
                 return true;
             }
         }
@@ -96,20 +87,16 @@ public class AlarmDetailActivity extends AppCompatActivity implements WeekdaysDa
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        Log.wtf("AlarmDetailActivity", "onStop");
+    public void onWeekdaysItemClicked(int i, WeekdaysDataItem weekdaysDataItem) {
+
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.wtf("AlarmDetailActivity", "onDestroy");
+    public void onWeekdaysSelected(int i, ArrayList<WeekdaysDataItem> arrayList) {
+
     }
 
-    private final View.OnClickListener cancelBtnClickListener = view -> {
-        finish();
-    };
+    private final View.OnClickListener cancelBtnClickListener = view -> finish();
 
     private final View.OnClickListener saveBtnClickListener = view -> {
 
@@ -124,18 +111,20 @@ public class AlarmDetailActivity extends AppCompatActivity implements WeekdaysDa
         alarm.setActivated(true);
 
         Realm realm = RealmUtil.getRealmInstance();
-        realm.executeTransaction(realm1 -> {
-            realm1.copyToRealmOrUpdate(alarm);
-        });
+        realm.executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(alarm));
         realm.close();
 
-        Log.wtf("Alarm", "New alarm : " + alarm.getId());
+//        Log.wtf("Alarm", "New alarm : " + alarm.getId());
 
-//        AlarmMgrUtil.setAlarm(AlarmDetailActivity.this, alarm);
+        //Set alarm
+        AlarmMgrUtil.setAlarm(AlarmDetailActivity.this, alarm);
+
         if (intentAlarm != null) {
             Intent intent = new Intent();
             intent.putExtra(ALARM_ID_EXTRA, intentAlarm.getId());
             setResult(RESULT_OK, intent);
+        } else {
+            setResult(RESULT_CANCELED);
         }
         finish();
     };
@@ -158,13 +147,5 @@ public class AlarmDetailActivity extends AppCompatActivity implements WeekdaysDa
 
     };
 
-    @Override
-    public void onWeekdaysItemClicked(int i, WeekdaysDataItem weekdaysDataItem) {
 
-    }
-
-    @Override
-    public void onWeekdaysSelected(int i, ArrayList<WeekdaysDataItem> arrayList) {
-
-    }
 }

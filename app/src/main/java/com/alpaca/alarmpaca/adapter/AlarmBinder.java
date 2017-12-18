@@ -16,6 +16,8 @@ import com.ahamed.multiviewadapter.ItemBinder;
 import com.ahamed.multiviewadapter.util.ItemDecorator;
 import com.alpaca.alarmpaca.R;
 import com.alpaca.alarmpaca.model.Alarm;
+import com.alpaca.alarmpaca.util.AlarmMgrUtil;
+import com.alpaca.alarmpaca.util.Contextor;
 import com.alpaca.alarmpaca.util.RealmUtil;
 
 import io.realm.Realm;
@@ -59,6 +61,7 @@ public class AlarmBinder extends ItemBinder<Alarm, AlarmBinder.ViewHolder> {
         void onItemLongClick(View view, Alarm item);
     }
 
+    @SuppressWarnings("deprecation")
     static class ViewHolder extends BaseViewHolder<Alarm> {
 
         private TextView timeTv;
@@ -106,11 +109,11 @@ public class AlarmBinder extends ItemBinder<Alarm, AlarmBinder.ViewHolder> {
 
                 }
 
-//                    if (isChecked) {
-//                        AlarmMgrUtil.setAlarm(Contextor.getContextInstance(), alarmId);
-//                    } else {
-//                        AlarmMgrUtil.cancelAlarm(Contextor.getContextInstance(), alarmId);
-//                    }
+                    if (isChecked) {
+                        AlarmMgrUtil.setAlarm(Contextor.getContextInstance(), getItem());
+                    } else {
+                        AlarmMgrUtil.cancelAlarm(Contextor.getContextInstance(), getItem());
+                    }
 
 
                 realm.close();

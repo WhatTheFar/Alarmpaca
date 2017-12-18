@@ -1,6 +1,5 @@
 package com.alpaca.alarmpaca.adapter;
 
-import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,15 +15,10 @@ import com.ahamed.multiviewadapter.BaseViewHolder;
 import com.ahamed.multiviewadapter.ItemBinder;
 import com.ahamed.multiviewadapter.util.ItemDecorator;
 import com.alpaca.alarmpaca.R;
-import com.alpaca.alarmpaca.model.Alarm;
 import com.alpaca.alarmpaca.model.RealmTasks;
-import com.alpaca.alarmpaca.util.RealmUtil;
-import com.alpaca.alarmpaca.view.CircleCheckBox;
 
 import java.text.DateFormat;
 import java.util.Objects;
-
-import io.realm.Realm;
 
 
 public class TaskBinder extends ItemBinder<RealmTasks, TaskBinder.ViewHolder> {
@@ -147,6 +141,8 @@ public class TaskBinder extends ItemBinder<RealmTasks, TaskBinder.ViewHolder> {
 
                 if (Objects.equals(item.getStatus(), "completed")) {
                     checkBox.setChecked(true);
+                } else {
+                    checkBox.setChecked(false);
                 }
 
             }

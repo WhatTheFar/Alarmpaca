@@ -53,20 +53,16 @@
             android:name=".activity.AlarmAlertActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".activity.TaskActivity" />
-
-        <activity android:name=".activity.LoginActivity" />
-
         <service
-            android:name=".AlarmService"
+            android:name=".service.AlarmService"
             android:enabled="true"
             android:exported="false" />
 
-        <receiver android:name=".AlarmReceiver" />
+        <receiver android:name=".service.AlarmReceiver" />
 
         <receiver
-            android:name=".BootReceiver"
-            android:enabled="false">
+            android:name=".service.BootReceiver"
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>

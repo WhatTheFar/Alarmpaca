@@ -1,43 +1,63 @@
 package com.alpaca.alarmpaca.model;
 
-import com.google.api.client.util.DateTime;
-import com.google.api.services.tasks.model.TaskList;
-import com.google.api.services.tasks.model.TaskLists;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.Date;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-/**
- * Created by Win10 M7 on 16/12/2560.
- */
 
-public class RealmTasks extends RealmObject {
+public class RealmTasks extends RealmObject implements Parcelable {
     @PrimaryKey
     private String id;
     private String title;
-    private String selfLink;
     private String notes;
     private String status;
     private Date due;
     private String position;
-    private boolean deleted;
+
+    public static final String NEW_TASK_ID = "new_task";
 
     public RealmTasks() {
 
     }
 
 
-
-    public RealmTasks(String id, String title, String notes, String status, Date due, boolean deleted) {
+    public RealmTasks(String id, String title, String notes, String status, Date due) {
         this.id = id;
         this.title = title;
         this.notes = notes;
         this.status = status;
         this.due = due;
-        this.deleted = deleted;
     }
+
+    protected RealmTasks(Parcel in) {
+        id = in.readString();
+        title = in.readString();
+        notes = in.readString();
+        status = in.readString();
+        position = in.readString();
+        long time = in.readLong();
+        if (time != -1) {
+            due = new Date(time);
+        } else {
+            due = null;
+        }
+    }
+
+    public static final Creator<RealmTasks> CREATOR = new Creator<RealmTasks>() {
+        @Override
+        public RealmTasks createFromParcel(Parcel in) {
+            return new RealmTasks(in);
+        }
+
+        @Override
+        public RealmTasks[] newArray(int size) {
+            return new RealmTasks[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -53,14 +73,6 @@ public class RealmTasks extends RealmObject {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getSelfLink() {
-        return selfLink;
-    }
-
-    public void setSelfLink(String selfLink) {
-        this.selfLink = selfLink;
     }
 
     public String getNotes() {
@@ -95,12 +107,23 @@ public class RealmTasks extends RealmObject {
         this.position = position;
     }
 
-    public boolean isDeleted() {
-        return deleted;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(title);
+        parcel.writeString(notes);
+        parcel.writeString(status);
+        parcel.writeString(position);
 
+        if (due != null) {
+            parcel.writeLong(due.getTime());
+        } else {
+            parcel.writeLong(-1);
+        }
+    }
 }
